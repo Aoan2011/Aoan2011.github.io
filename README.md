@@ -15,3 +15,6 @@
    <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=Aoan2011/Aoan2011.github.io&type=date&legend=top-left&sealed_token=jVtPLKvvl2p6EUqncJYxDXqumE1obFQ4RmTHCSeIKD-h6mmkjIE3ET9spEUchZaxmcrAw7KzXS2wd0JlfyKFKmjFTX9rvqrWMV8vB_J9wgiCH3s31KVOxw" />
  </picture>
 </a>
+
+# Buy me a coffee
+![Coffee](.\assets\buy_me_a_coffee.png)
