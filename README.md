@@ -17,4 +17,4 @@
 </a>
 
 # Buy me a coffee
-![Coffee](.\assets\buy_me_a_coffee.png)
+![Coffee](/assets/buy_me_a_coffee.png)
