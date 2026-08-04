@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aoan2011 | 个人主页</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* ========== 浅色主题（默认） ========== */
+        :root {
+            --bg-base: #f5f7fa;
+            --bg-glass: rgba(255, 255, 255, 0.65);
+            --bg-glass-strong: rgba(255, 255, 255, 0.85);
+            --border-glass: rgba(0, 0, 0, 0.08);
+            --border-glow: rgba(99, 102, 241, 0.35);
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --accent: #6366f1;
+            --accent-soft: rgba(99, 102, 241, 0.12);
+            --gradient-main: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            --shadow-soft: 0 8px 32px rgba(99, 102, 241, 0.15);
+            --orb-pink: #db2777;
+            --orb-purple: #9333ea;
+            --orb-blue: #2563eb;
+            --orb-opacity: 0.65;
+        }
+
+        /* ========== 深色主题 ========== */
+        [data-theme="dark"] {
+            --bg-base: #05070d;
+            --bg-glass: rgba(20, 28, 45, 0.55);
+            --bg-glass-strong: rgba(30, 41, 59, 0.7);
+            --border-glass: rgba(148, 163, 184, 0.18);
+            --border-glow: rgba(56, 189, 248, 0.4);
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent: #38bdf8;
+            --accent-soft: rgba(56, 189, 248, 0.12);
+            --gradient-main: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+            --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --orb-pink: #ec4899;
+            --orb-purple: #a855f7;
+            --orb-blue: #3b82f6;
+            --orb-opacity: 0.55;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', Roboto, sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            line-height: 1.7;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* 强化版柔彩光晕背景 - 更快、更浓、更显眼 */
+        .bg-orbs {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: var(--orb-opacity);
+            animation: float 12s ease-in-out infinite alternate;
+        }
+
+        .orb-1 {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--orb-pink) 0%, transparent 70%);
+            top: -180px;
+            left: -120px;
+            animation-duration: 11s;
+        }
+
+        .orb-2 {
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, var(--orb-purple) 0%, transparent 70%);
+            top: 5%;
+            right: -220px;
+            animation-duration: 13s;
+            animation-delay: -3s;
+        }
+
+        .orb-3 {
+            width: 650px;
+            height: 650px;
+            background: radial-gradient(circle, var(--orb-blue) 0%, transparent 70%);
+            bottom: -220px;
+            left: 15%;
+            animation-duration: 14s;
+            animation-delay: -6s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            50% {
+                transform: translate(60px, -40px) scale(1.12);
+            }
+
+            100% {
+                transform: translate(-40px, 30px) scale(0.93);
+            }
+        }
+
+        /* 导航栏 */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.1rem 0;
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid var(--border-glass);
+            z-index: 1000;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 2.2rem;
+        }
+
+        .nav-logo {
+            font-weight: 800;
+            font-size: 1.15rem;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 0.3px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.2rem;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-main);
+            transition: width 0.25s ease;
+            border-radius: 2px;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--text-primary);
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        /* 主题切换按钮 */
+        .theme-toggle {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 1px solid var(--border-glass);
+            background: var(--bg-glass);
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: all 0.25s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--border-glow);
+            background: var(--accent-soft);
+            transform: scale(1.05);
+        }
+
+        /* 主内容 */
+        main {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 9rem 2rem 5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Hero 区域 */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 2.2rem;
+            padding: 2rem 0 4rem;
+        }
+
+        /* 头像 */
+        .avatar-wrapper {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            overflow: hidden;
+            padding: 3px;
+            background: var(--gradient-main);
+            box-shadow: 0 0 50px rgba(168, 85, 247, 0.35);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .avatar-wrapper:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 80px rgba(168, 85, 247, 0.5);
+        }
+
+        .avatar-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            background: var(--bg-base);
+        }
+
+        .hero-text h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0.8rem;
+            letter-spacing: -0.5px;
+            color: var(--text-primary);
+        }
+
+        .hero-text .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            max-width: 620px;
+            margin-bottom: 2rem;
+            font-weight: 400;
+        }
+
+        .hero-text .highlight {
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 600;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            padding: 0.75rem 1.8rem;
+            background: var(--gradient-main);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.35);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.45);
+        }
+
+        .btn-ghost {
+            padding: 0.75rem 1.8rem;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            color: var(--text-primary);
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.25s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--border-glow);
+            background: var(--accent-soft);
+            transform: translateY(-2px);
+        }
+
+        /* 玻璃卡片通用 */
+        .glass-card {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .glass-card:hover {
+            border-color: var(--border-glow);
+        }
+
+        /* 关于我 */
+        .about-section {
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: var(--text-primary);
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 22px;
+            background: var(--gradient-main);
+            border-radius: 2px;
+        }
+
+        .about-content {
+            padding: 2.2rem;
+        }
+
+        .about-content p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.9;
+            margin-bottom: 1rem;
+        }
+
+        .about-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* 技能栈 */
+        .skills-section {
+            margin-bottom: 4rem;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .skill-item {
+            padding: 1.5rem;
+        }
+
+        .skill-item h3 {
+            font-size: 1.05rem;
+            margin-bottom: 0.6rem;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .skill-item p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        /* 项目亮点 */
+        .project-highlight {
+            padding: 2.2rem;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .project-info {
+            flex: 1;
+        }
+
+        .project-info h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .project-info p {
+            color: var(--text-secondary);
+            margin-bottom: 1.2rem;
+            font-size: 0.95rem;
+        }
+
+        .project-stats {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.6rem;
+            font-weight: 700;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        footer {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-glass);
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (max-width: 768px) {
+            .hero-text h1 {
+                font-size: 2.2rem;
+            }
+
+            .project-highlight {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .project-stats {
+                justify-content: center;
+            }
+
+            .nav-links {
+                gap: 1.2rem;
+                font-size: 0.85rem;
+            }
+
+            .orb {
+                filter: blur(60px);
+            }
+
+            .nav-left {
+                gap: 1.2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 背景光晕 -->
+    <div class="bg-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <nav>
+        <div class="nav-container">
+            <div class="nav-left">
+                <div class="nav-logo">AOAN2011</div>
+                <div class="nav-links">
+                    <a href="index.html" class="active">首页</a>
+                    <a href="one-editor.html">One Editor</a>
+                    <a href="download.html">下载</a>
+                </div>
+            </div>
+            <button class="theme-toggle" id="theme-toggle" title="切换深浅色">
+                <span id="theme-icon">🌙</span>
+            </button>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero">
+            <!-- 头像路径已改为 ./assets/icon.jpg -->
+            <div class="avatar-wrapper">
+                <img id="avatar-img" src="./assets/icon.jpg" alt="个人头像">
+            </div>
+
+            <div class="hero-text">
+                <h1>你好，我是 Aoan2011</h1>
+                <p class="subtitle">
+                    <span class="highlight">One Editor 作者</span> · 专注终端工具与开发者效率
+                    <br>热爱开源，追求极简而强大的设计美学
+                </p>
+                <div class="social-links">
+                    <a href="https://github.com/Aoan2011" target="_blank" class="btn-primary">GitHub 主页</a>
+                    <a href="one-editor.html" class="btn-ghost">查看 One Editor</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="about-section">
+            <h2 class="section-title">关于我</h2>
+            <div class="glass-card about-content">
+                <p>
+                    一名热衷于创造高效开发工具的开发者，专注于终端 UI、代码编辑器与开发者体验方向。
+                    相信好的工具应当轻量、快速且高度可定制，在极简的外表下蕴藏强大的能力。
+                </p>
+                <p>
+                    One Editor 是我的主力开源项目，基于 Python + Textual 从零构建，
+                    致力于在终端中提供接近现代 IDE 的编辑体验，同时保持极致的轻量与启动速度。
+                </p>
+            </div>
+        </section>
+
+        <section class="skills-section">
+            <h2 class="section-title">技术方向</h2>
+            <div class="skills-grid">
+                <div class="glass-card skill-item">
+                    <h3>终端 UI 开发</h3>
+                    <p>深耕 Textual TUI 框架，打造现代化终端交互界面</p>
+                </div>
+                <div class="glass-card skill-item">
+                    <h3>编辑器与 LSP</h3>
+                    <p>语言服务器协议集成，代码补全、诊断与跳转</p>
+                </div>
+                <div class="glass-card skill-item">
+                    <h3>Python 全栈</h3>
+                    <p>从后端逻辑到前端界面，完整的项目工程能力</p>
+                </div>
+                <div class="glass-card skill-item">
+                    <h3>开源项目维护</h3>
+                    <p>项目架构、版本管理、社区协作与文档建设</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">代表项目</h2>
+            <div class="glass-card project-highlight">
+                <div class="project-info">
+                    <h3>One Editor</h3>
+                    <p>基于 Textual 构建的现代化终端代码编辑器，提供接近 VSCode 的编辑体验，同时保持轻量、快速和高度可定制。</p>
+                    <div class="project-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">100%</div>
+                            <div class="stat-label">Python 编写</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">LSP</div>
+                            <div class="stat-label">多语言支持</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">AI</div>
+                            <div class="stat-label">Ollama 集成</div>
+                        </div>
+                    </div>
+                    <a href="one-editor.html" class="btn-ghost">了解详情 →</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Aoan2011. Built with passion for developers.</p>
+    </footer>
+
+    <script>
+        // ========== 深浅色主题切换 ==========
+        const THEME_KEY = 'site_theme_preference';
+        const toggleBtn = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+
+        // 初始化主题
+        function initTheme() {
+            const saved = localStorage.getItem(THEME_KEY);
+            if (saved) {
+                document.documentElement.setAttribute('data-theme', saved);
+            } else {
+                // 跟随系统
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+            }
+            updateIcon();
+        }
+
+        // 切换主题
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem(THEME_KEY, next);
+            updateIcon();
+        }
+
+        // 更新按钮图标
+        function updateIcon() {
+            const current = document.documentElement.getAttribute('data-theme');
+            themeIcon.textContent = current === 'dark' ? '☀️' : '🌙';
+        }
+
+        // 监听系统主题变化（用户未手动设置时）
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            if (!localStorage.getItem(THEME_KEY)) {
+                document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+                updateIcon();
+            }
+        });
+
+        toggleBtn.addEventListener('click', toggleTheme);
+        initTheme();
+    </script>
+</body>
+
+</html>
