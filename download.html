@@ -4,9 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>下载 | One Editor for Windows</title>
-        <link rel="icon" href="./assets/icon.jpg" type="image/jpeg">
-        <link rel="shortcut icon" href="./assets/icon.jpg" type="image/jpeg">
+    <title>Download | One-Editor</title>
+    <link rel="icon" href="./assets/icon.jpg" type="image/jpeg">
+    <link rel="shortcut icon" href="./assets/icon.jpg" type="image/jpeg">
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
     <style>
         * {
             margin: 0;
@@ -14,46 +15,44 @@
             box-sizing: border-box;
         }
 
-        /* 浅色主题 */
         :root {
             --bg-base: #f5f7fa;
-            --bg-glass: rgba(255, 255, 255, 0.65);
-            --bg-glass-strong: rgba(255, 255, 255, 0.85);
-            --border-glass: rgba(0, 0, 0, 0.08);
-            --border-glow: rgba(99, 102, 241, 0.35);
             --text-primary: #1e293b;
             --text-secondary: #475569;
             --text-muted: #64748b;
-            --accent: #6366f1;
-            --accent-soft: rgba(99, 102, 241, 0.12);
-            --success: #10b981;
-            --warning: #d97706;
-            --gradient-main: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            --shadow-soft: 0 8px 32px rgba(99, 102, 241, 0.18);
-            --orb-pink: #db2777;
-            --orb-purple: #4f46e5;
-            --orb-opacity: 0.6;
+            --accent: #10b981;
+            --accent-soft: rgba(16, 185, 129, 0.12);
+            --gradient-main: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --loading-bar-color: #ef4444;
+
+            --glass-bg: rgba(255, 255, 255, 0.20);
+            --glass-border: rgba(255, 255, 255, 0.35);
+            --glass-shadow: 0px 6px 30px 0px rgba(0, 0, 0, 0.12);
+            --glass-inset-light: rgba(255, 255, 255, 0.35);
+            --glass-inset-dark: rgba(0, 0, 0, 0.04);
+            --glass-blur: 2px;
         }
 
-        /* 深色主题 */
         [data-theme="dark"] {
             --bg-base: #05070d;
-            --bg-glass: rgba(20, 28, 45, 0.55);
-            --bg-glass-strong: rgba(30, 41, 59, 0.7);
-            --border-glass: rgba(148, 163, 184, 0.18);
-            --border-glow: rgba(56, 189, 248, 0.4);
             --text-primary: #f1f5f9;
             --text-secondary: #94a3b8;
             --text-muted: #64748b;
-            --accent: #38bdf8;
-            --accent-soft: rgba(56, 189, 248, 0.12);
-            --success: #34d399;
-            --warning: #fbbf24;
-            --gradient-main: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
-            --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.3);
-            --orb-pink: #ec4899;
-            --orb-purple: #6366f1;
-            --orb-opacity: 0.5;
+            --accent: #34d399;
+            --accent-soft: rgba(52, 211, 153, 0.14);
+            --gradient-main: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+
+            --glass-bg: rgba(22, 26, 38, 0.20);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --glass-shadow: 0px 6px 30px 0px rgba(0, 0, 0, 0.45);
+            --glass-inset-light: rgba(255, 255, 255, 0.08);
+            --glass-inset-dark: rgba(0, 0, 0, 0.18);
+            --glass-blur: 2px;
+        }
+
+        html,
+        body {
+            height: 100%;
         }
 
         body {
@@ -64,771 +63,1016 @@
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
+            padding-bottom: 140px;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* 强化光晕 */
-        .bg-orbs {
-            position: fixed;
-            inset: 0;
-            overflow: hidden;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        .orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: var(--orb-opacity);
-            animation: float 12s ease-in-out infinite alternate;
-        }
-
-        .orb-1 {
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, var(--orb-pink) 0%, transparent 70%);
-            top: -180px;
-            right: -120px;
-            animation-duration: 11s;
-        }
-
-        .orb-2 {
-            width: 650px;
-            height: 650px;
-            background: radial-gradient(circle, var(--orb-purple) 0%, transparent 70%);
-            bottom: -220px;
-            left: -120px;
-            animation-duration: 13s;
-            animation-delay: -5s;
-        }
-
-        @keyframes float {
-            0% {
-                transform: translate(0, 0) scale(1);
-            }
-
-            50% {
-                transform: translate(50px, -30px) scale(1.1);
-            }
-
-            100% {
-                transform: translate(-30px, 25px) scale(0.94);
-            }
-        }
-
-        /* 导航栏 */
-        nav {
+        /* 顶部红色加载条 */
+        .top-loading-bar {
             position: fixed;
             top: 0;
-            width: 100%;
-            padding: 1.1rem 0;
-            background: var(--bg-glass);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border-bottom: 1px solid var(--border-glass);
-            z-index: 1000;
-            transition: background 0.3s ease, border-color 0.3s ease;
+            left: 0;
+            height: 5px;
+            background-color: var(--loading-bar-color);
+            z-index: 9999;
+            width: 0%;
+            transform: translateY(-100%);
+            transition: transform 0.22s ease, width 0.35s ease;
         }
 
-        .nav-container {
-            max-width: 960px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .top-loading-bar.active {
+            transform: translateY(0);
         }
 
-        .nav-left {
-            display: flex;
-            align-items: center;
-            gap: 2.2rem;
+        /* 页面入场动画 */
+        .page-fade {
+            opacity: 0;
+            transform: translateY(14px);
+            transition: opacity 0.45s ease, transform 0.45s ease;
         }
 
-        .nav-logo {
-            font-weight: 800;
-            font-size: 1.15rem;
+        .page-fade.in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reading-progress {
+            position: fixed;
+            top: 6px;
+            left: 0;
+            height: 3px;
             background: var(--gradient-main);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            width: 0%;
+            z-index: 9998;
         }
 
-        .nav-links {
-            display: flex;
-            gap: 2.2rem;
+        .bg-mountains {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
         }
 
-        .nav-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: 500;
-            transition: all 0.25s ease;
-            position: relative;
+        .bg-mountains::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom,
+                    rgba(245, 247, 250, 0.82) 0%,
+                    rgba(245, 247, 250, 0.64) 45%,
+                    rgba(245, 247, 250, 0.88) 100%);
+            transition: background 0.3s ease;
         }
 
-        .nav-links a::after {
+        [data-theme="dark"] .bg-mountains::after {
+            background: linear-gradient(to bottom,
+                    rgba(5, 7, 13, 0.88) 0%,
+                    rgba(5, 7, 13, 0.72) 45%,
+                    rgba(5, 7, 13, 0.92) 100%);
+        }
+
+        .mouse-light {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        body:hover .mouse-light {
+            opacity: 1;
+        }
+
+        .mouse-light::before {
             content: '';
             position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--gradient-main);
-            transition: width 0.25s ease;
-            border-radius: 2px;
+            left: var(--mx);
+            top: var(--my);
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.18) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
         }
 
-        .nav-links a:hover,
-        .nav-links a.active {
+        [data-theme="dark"] .mouse-light::before {
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%);
+        }
+
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur)) saturate(150%) contrast(100%) brightness(120%);
+            -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%) contrast(100%) brightness(120%);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            box-shadow: var(--glass-shadow),
+                inset 0 1px 0 0 var(--glass-inset-light),
+                inset 0 -1px 0 0 var(--glass-inset-dark);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: scale(1);
+            isolation: isolate;
+            word-break: break-word;
+        }
+
+        .glass:hover {
+            transform: scale(1.015);
+        }
+
+        .glass>.vibrancy-effect {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+            mix-blend-mode: overlay;
+            pointer-events: none;
+            border-radius: inherit;
+        }
+
+        /* ==========底部导航栏：缩小下移模式，点击展开========== */
+        /* ========== 底部导航栏：低矮长条模式 ========== */
+        .nav-toolbar {
+            position: fixed;
+            bottom: 1.6rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(0);
+            z-index: 1000;
+            transition: transform 0.34s cubic-bezier(0.2, 0, 0.2, 1);
+            cursor: pointer;
+            width: 92%;
+            max-width: 760px;
+        }
+
+        .nav-toolbar.shrink-mode {
+            transform: translateX(-50%) translateY(64px) scale(0.92);
+        }
+
+        .nav-toolbar .glass {
+            padding: 14px 18px;
+            border-radius: 999px;
+        }
+
+        .nav-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            position: relative;
+            z-index: 2;
+            flex-wrap: nowrap;
+            min-width: 0;
+        }
+
+        .time-widget {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            padding: 0 0.4rem;
+            flex-shrink: 0;
+        }
+
+        .nav-items {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            flex-wrap: nowrap;
+        }
+
+        .nav-item {
+            padding: 10px 14px;
+            border-radius: 999px;
+            text-decoration: none;
             color: var(--text-primary);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.25s ease;
+            white-space: nowrap;
         }
 
-        .nav-links a:hover::after,
-        .nav-links a.active::after {
-            width: 100%;
+        .nav-item:hover {
+            color: var(--accent);
+            background: var(--accent-soft);
         }
 
-        .theme-toggle {
+        .nav-item.active {
+            color: var(--accent);
+            background: var(--accent-soft);
+        }
+
+        .theme-group {
+            display: flex;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .theme-btn {
             width: 36px;
             height: 36px;
-            border-radius: 8px;
-            border: 1px solid var(--border-glass);
-            background: var(--bg-glass);
-            color: var(--text-primary);
+            border: none;
+            background: transparent;
             cursor: pointer;
+            font-size: 1rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.1rem;
-            transition: all 0.25s ease;
-            backdrop-filter: blur(10px);
+            border-radius: 999px;
+            transition: background 0.2s;
         }
 
-        .theme-toggle:hover {
-            border-color: var(--border-glow);
+        .theme-btn:hover {
             background: var(--accent-soft);
-            transform: scale(1.05);
         }
 
-        /* 主内容 */
+        .theme-btn.active {
+            background: var(--accent-soft);
+            color: var(--accent);
+        }
+
         main {
-            max-width: 960px;
+            max-width: 1080px;
             margin: 0 auto;
-            padding: 9rem 2rem 5rem;
+            padding: 5rem 2rem 3rem;
             position: relative;
             z-index: 1;
         }
 
-        .download-header {
+        .page-header {
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 2.5rem;
+            word-break: break-word;
         }
 
-        .download-header h1 {
-            font-size: 2.8rem;
-            font-weight: 800;
+        .page-header h1 {
+            font-size: 2.6rem;
             margin-bottom: 0.8rem;
-            color: var(--text-primary);
-        }
-
-        .download-header p {
-            color: var(--text-secondary);
-            font-size: 1.15rem;
-        }
-
-        /* 主下载卡片 */
-        .download-card-main {
-            max-width: 680px;
-            margin: 0 auto 3rem;
-            padding: 2.8rem;
-            background: var(--bg-glass);
-            border: 1px solid var(--border-glass);
-            border-radius: 20px;
-            backdrop-filter: blur(20px) saturate(180%);
-            box-shadow: var(--shadow-soft);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .download-card-main::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
             background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .download-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 2rem;
-        }
-
-        .version-info h2 {
-            font-size: 1.6rem;
-            margin-bottom: 0.3rem;
-        }
-
-        .version-info .platform {
+        .page-header p {
             color: var(--text-secondary);
-            font-size: 0.95rem;
-        }
-
-        .version-tag {
-            padding: 0.3rem 0.8rem;
-            background: rgba(16, 185, 129, 0.12);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            border-radius: 6px;
-            color: var(--success);
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .download-btn-main {
-            display: block;
-            width: 100%;
-            padding: 1.1rem;
-            background: var(--gradient-main);
-            color: white;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 1.05rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 6px 25px rgba(99, 102, 241, 0.35);
-            margin-bottom: 1.8rem;
-            cursor: pointer;
-            border: none;
-        }
-
-        .download-btn-main:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 40px rgba(99, 102, 241, 0.5);
-        }
-
-        .download-btn-main:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .file-meta {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--border-glass);
-        }
-
-        .meta-item {
-            text-align: center;
-        }
-
-        .meta-label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-bottom: 0.2rem;
-        }
-
-        .meta-value {
-            font-size: 0.95rem;
-            color: var(--text-primary);
-            font-weight: 500;
-        }
-
-        .cache-hint {
-            text-align: right;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            margin-top: 1rem;
-            opacity: 0.7;
-        }
-
-        /* 玻璃卡片通用 */
-        .glass-card {
-            background: var(--bg-glass);
-            border: 1px solid var(--border-glass);
-            border-radius: 14px;
-            backdrop-filter: blur(16px) saturate(180%);
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow-soft);
-        }
-
-        .glass-card:hover {
-            border-color: var(--border-glow);
-        }
-
-        /* 区块标题 */
-        .section-title {
-            font-size: 1.35rem;
-            font-weight: 700;
-            margin: 3rem 0 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-        }
-
-        .section-title::before {
-            content: '';
-            width: 4px;
-            height: 20px;
-            background: var(--gradient-main);
-            border-radius: 2px;
-        }
-
-        /* 双列布局 */
-        .two-col {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-        }
-
-        /* 列表样式 */
-        .requirements-list,
-        .notes-list,
-        .changelog-list {
-            padding: 1.5rem 1.8rem;
-            list-style: none;
-        }
-
-        .requirements-list li,
-        .notes-list li {
-            padding: 0.45rem 0;
-            padding-left: 1.4rem;
-            position: relative;
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-        }
-
-        .requirements-list li::before,
-        .notes-list li::before {
-            content: '✓';
-            position: absolute;
-            left: 0;
-            color: var(--success);
-            font-weight: bold;
-        }
-
-        /* 更新日志 */
-        .changelog-list li {
-            padding: 0.6rem 0;
-            padding-left: 1.4rem;
-            position: relative;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            border-bottom: 1px dashed var(--border-glass);
-        }
-
-        .changelog-list li:last-child {
-            border-bottom: none;
-        }
-
-        .changelog-list li::before {
-            content: '›';
-            position: absolute;
-            left: 0;
-            color: var(--accent);
-            font-weight: bold;
             font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
         }
 
-        .changelog-version {
-            color: var(--accent);
+        .loader-wrap {
+            padding: 3rem 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.2rem;
+        }
+
+        .gradient-spinner {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: conic-gradient(var(--accent), transparent 30%);
+            animation: spin 1s linear infinite;
+            position: relative;
+        }
+
+        .gradient-spinner::before {
+            content: "";
+            position: absolute;
+            inset: 4px;
+            border-radius: 50%;
+            background: var(--bg-base);
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-step-text {
+            color: var(--text-secondary);
+            font-family: Consolas, monospace;
+            word-break: break-word;
+        }
+
+        .download-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.4rem;
+            margin-bottom: 2.2rem;
+        }
+
+        .download-card {
+            padding: 1.8rem;
+        }
+
+        .download-card h3 {
+            margin-bottom: 0.6rem;
+            font-size: 1.25rem;
+        }
+
+        .platform-desc {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            word-break: break-word;
+        }
+
+        .tag-badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 8px;
+            font-size: 0.78rem;
             font-weight: 600;
             margin-right: 0.5rem;
         }
 
-        /* 其他下载方式 */
-        .alt-downloads {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
+        .tag-stable {
+            background-color: #22c55e22;
+            color: #16a34a;
         }
 
-        .alt-card {
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.6rem;
+        .tag-prerelease {
+            background-color: #f59e0b22;
+            color: #d97706;
         }
 
-        .alt-card h4 {
-            font-size: 1.05rem;
-            color: var(--text-primary);
+        .tag-local {
+            background-color: #3b82f622;
+            color: #2563eb;
         }
 
-        .alt-card p {
-            color: var(--text-muted);
+        .meta-text {
             font-size: 0.85rem;
-            flex: 1;
+            color: var(--text-muted);
+            margin: 0.4rem 0 1rem;
+            font-family: Consolas, monospace;
+            word-break: break-all;
         }
 
-        .alt-btn {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            background: var(--accent-soft);
-            border: 1px solid var(--border-glow);
+        .btn-block {
+            display: block;
+            text-align: center;
+            padding: 0.7rem 1rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 0.6rem;
+            word-break: break-word;
+        }
+
+        .btn-primary {
+            background: var(--gradient-main);
+            color: #fff;
+        }
+
+        .btn-outline {
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            background: var(--glass-bg);
+        }
+
+        .asset-list {
+            margin-top: 0.8rem;
+        }
+
+        .asset-item {
+            font-size: 0.88rem;
+            padding: 0.4rem 0;
+            word-break: break-all;
+        }
+
+        .asset-item a {
             color: var(--accent);
             text-decoration: none;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            text-align: center;
-            transition: all 0.2s ease;
         }
 
-        .alt-btn:hover {
-            background: var(--accent);
-            color: white;
+        .asset-item a:hover {
+            text-decoration: underline;
         }
 
-        /* 页脚 */
+        .code-block {
+            padding: 1.2rem;
+            border-radius: 12px;
+            font-family: Consolas, monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            background: rgba(0,0,0,0.06);
+            margin: 1rem 0;
+        }
+        [data-theme="dark"] .code-block {
+            background: rgba(0,0,0,0.25);
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            margin: 2.4rem 0 1rem;
+        }
+
         footer {
-            max-width: 960px;
+            max-width: 1080px;
             margin: 0 auto;
             padding: 2rem;
             text-align: center;
             color: var(--text-muted);
             font-size: 0.85rem;
-            border-top: 1px solid var(--border-glass);
             position: relative;
             z-index: 1;
         }
 
-        footer a {
-            color: var(--accent);
-            text-decoration: none;
+        .source-mode-tag {
+            font-size: 0.8rem;
+            margin-bottom: 0.6rem;
+            word-break: break-word;
         }
 
-        @media (max-width: 768px) {
-            .two-col { grid-template-columns: 1fr; }
-            .alt-downloads { grid-template-columns: 1fr; }
-            .file-meta { grid-template-columns: 1fr; gap: 0.8rem; }
-            .download-header h1 { font-size: 2rem; }
-            .download-card-main { padding: 2rem 1.5rem; }
-            .nav-left { gap: 1.2rem; }
+        /* 更新日志 */
+        .changelog-block {
+            max-height: 420px;
+            overflow-y: auto;
+            padding-right: 0.4rem;
         }
+
+        .changelog-item {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid var(--glass-border);
+            word-break: break-word;
+        }
+
+        .changelog-item:last-child {
+            border-bottom: none;
+        }
+
+        .changelog-version {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .changelog-body {
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+        }
+
+        /* 历史版本列表 */
+        .history-list {
+            max-height: 360px;
+            overflow-y: auto;
+            padding-right: 0.4rem;
+        }
+
+        .history-item {
+            padding: 0.7rem 0;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            word-break: break-word;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-tag {
+            font-family: Consolas, monospace;
+            font-weight: 500;
+        }
+
+        .history-time {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .nav-wrap {
+                gap: 0.4rem;
+            }
+
+            .time-widget {
+                font-size: 0.7rem;
+            }
+
+            .nav-item {
+                padding: 0.5rem 0.65rem;
+                font-size: 0.82rem;
+            }
+
+            .theme-btn {
+                width: 34px;
+                height: 34px;
+                font-size: 0.9rem;
+            }
+
+            .download-card {
+                padding: 1.4rem;
+            }
+            /* ========== 底部导航栏：低矮长条模式 ========== */
+.nav-toolbar {
+    position: fixed;
+    bottom: 1.6rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(0);
+    z-index: 1000;
+    transition: transform 0.34s cubic-bezier(0.2, 0, 0.2, 1);
+    cursor: pointer;
+    width: 92%;
+    max-width: 760px;
+}
+
+.nav-toolbar.shrink-mode {
+    transform: translateX(-50%) translateY(64px) scale(0.92);
+}
+
+.nav-toolbar .glass {
+    padding: 14px 18px;
+    border-radius: 999px;
+}
+
+.nav-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    position: relative;
+    z-index: 2;
+    flex-wrap: nowrap;
+    min-width: 0;
+}
+
+.time-widget {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    padding: 0 0.4rem;
+    flex-shrink: 0;
+}
+
+.nav-items {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: nowrap;
+}
+
+.nav-item {
+    padding: 10px 14px;
+    border-radius: 999px;
+    text-decoration: none;
+    color: var(--text-primary);
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+}
+
+.nav-item:hover {
+    color: var(--accent);
+    background: var(--accent-soft);
+}
+
+.nav-item.active {
+    color: var(--accent);
+    background: var(--accent-soft);
+}
+
+.theme-group {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.theme-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    transition: background 0.2s;
+}
+
+.theme-btn:hover {
+    background: var(--accent-soft);
+}
+
+.theme-btn.active {
+    background: var(--accent-soft);
+    color: var(--accent);
+}
+        
     </style>
-    </head>
-    
-    <body>
-        <!-- 背景光晕 -->
-        <div class="bg-orbs">
-            <div class="orb orb-1"></div>
-            <div class="orb orb-2"></div>
+</head>
+
+<body>
+    <div id="app">
+        <div class="top-loading-bar" :class="{'active':isPageLoading}" :style="{width:loadingBarWidth+'%'}"></div>
+        <div class="reading-progress" :style="{width: scrollPercent + '%'}"></div>
+        <div class="mouse-light" :style="lightStyle"></div>
+        <div class="bg-mountains" :style="backgroundStyle"></div>
+
+        <div class="nav-toolbar" :class="{'shrink-mode': shrinkNavbar}" @click="toggleShrinkNavbar">
+            <div class="glass">
+                <div class="vibrancy-effect"></div>
+                <div class="nav-wrap">
+                    <div class="time-widget">🕒 {{beijingTime}}</div>
+                    <nav class="nav-items">
+                        <a href="index.html" class="nav-item">首页</a>
+                        <a href="one-editor.html" class="nav-item">One Editor</a>
+                        <a href="download.html" class="nav-item active">下载</a>
+                    </nav>
+                    <div class="theme-group">
+                        <button class="theme-btn" :class="{'active':themeMode==='dark'}" @click="setTheme('dark')"
+                            title="深色">🌙</button>
+                        <button class="theme-btn" :class="{'active':themeMode==='light'}" @click="setTheme('light')"
+                            title="浅色">☀️</button>
+                        <button class="theme-btn" :class="{'active':themeMode==='auto'}" @click="setTheme('auto')"
+                            title="跟随系统">🔄</button>
+                    </div>
+                </div>
+            </div>
         </div>
-    
-        <nav>
-            <div class="nav-container">
-                <div class="nav-left">
-                    <div class="nav-logo">AOAN2011</div>
-                    <div class="nav-links">
-                        <a href="index.html">首页</a>
-                        <a href="one-editor.html">One Editor</a>
-                        <a href="download.html" class="active">下载</a>
-                    </div>
-                </div>
-                <button class="theme-toggle" id="theme-toggle" title="切换深浅色">
-                    <span id="theme-icon">🌙</span>
-                </button>
+
+        <main class="page-fade" :class="{'in':pageMounted}">
+            <div class="page-header">
+                <h1>下载 One-Editor</h1>
+                <p>获取正式版 / 预发布版，也可以从源码自行构建。</p>
             </div>
-        </nav>
-    
-        <main>
-            <section class="download-header">
-                <h1>下载 One Editor</h1>
-                <p>获取最新 Windows 二进制可执行文件，开箱即用，无需配置 Python 环境</p>
-            </section>
-    
-            <!-- 主下载卡片 - 数据自动同步 -->
-            <section class="download-card-main">
-                <div class="download-card-header">
-                    <div class="version-info">
-                        <h2 id="release-title">One Editor for Windows</h2>
-                        <p class="platform" id="release-platform">Windows 10 / 11 · 64 位 · 简体中文</p>
-                    </div>
-                    <span class="version-tag">最新稳定版</span>
-                </div>
-    
-                <a id="download-btn" href="#" class="download-btn-main" disabled>
-                    <span id="download-btn-text">正在获取最新版本...</span>
-                </a>
-    
-                <div class="file-meta">
-                    <div class="meta-item">
-                        <div class="meta-label">文件格式</div>
-                        <div class="meta-value" id="file-format">.exe 可执行文件</div>
-                    </div>
-                    <div class="meta-item">
-                        <div class="meta-label">版本号</div>
-                        <div class="meta-value" id="release-version">加载中</div>
-                    </div>
-                    <div class="meta-item">
-                        <div class="meta-label">发布时间</div>
-                        <div class="meta-value" id="release-date">加载中</div>
-                    </div>
-                </div>
-                <div class="cache-hint" id="cache-hint"></div>
-            </section>
-    
-            <!-- 系统要求 & 使用说明 -->
-            <div class="two-col">
-                <div>
-                    <h2 class="section-title">系统要求</h2>
-                    <div class="glass-card">
-                        <ul class="requirements-list">
-                            <li>操作系统：Windows 10 及以上（64 位）</li>
-                            <li>无需安装 Python 运行环境</li>
-                            <li>建议至少 50MB 可用磁盘空间</li>
-                            <li>支持 Windows Terminal / CMD / PowerShell</li>
-                            <li>LSP 功能需自行安装对应语言服务器</li>
-                            <li>Ollama 功能需本地部署 Ollama 服务</li>
-                        </ul>
-                    </div>
-                </div>
-                <div>
-                    <h2 class="section-title">使用说明</h2>
-                    <div class="glass-card">
-                        <ul class="notes-list">
-                            <li>下载后直接双击运行，无需安装</li>
-                            <li>若 Windows 弹出安全警告，点击「仍要运行」</li>
-                            <li>建议将程序放入非系统盘目录</li>
-                            <li>配置文件自动生成至 %USERPROFILE%/.one-editor/</li>
-                            <li>首次启动会显示欢迎页面引导操作</li>
-                            <li>遇到问题可前往 GitHub 提交 Issue</li>
-                        </ul>
-                    </div>
+
+            <div class="glass" v-if="fetchLoading">
+                <div class="loader-wrap">
+                    <div class="gradient-spinner"></div>
+                    <div class="loading-step-text">{{fetchStep}}</div>
                 </div>
             </div>
-    
-            <!-- 自动加载的更新日志 -->
-            <h2 class="section-title">更新日志</h2>
-            <div class="glass-card">
-                <ul class="changelog-list" id="changelog-list">
-                    <li style="color: var(--text-muted);">正在从 GitHub 拉取最新更新记录...</li>
-                </ul>
-            </div>
-    
-            <!-- 其他获取方式 -->
-            <h2 class="section-title">其他获取方式</h2>
-            <div class="alt-downloads">
-                <div class="glass-card alt-card">
-                    <h4>源码运行</h4>
-                    <p>克隆 GitHub 仓库，通过 Python 源码直接运行，适合开发与自定义修改。</p>
-                    <a href="https://github.com/Aoan2011/One-Editor" target="_blank" class="alt-btn">前往 GitHub</a>
+
+            <div v-else>
+                <div class="source-mode-tag">
+                    📡 数据源模式：{{sourceMode === 'github' ? 'GitHub API' : sourceMode === 'local' ? '本地assets回退' :
+                    'auto(自动切换)'}}
+                    | 缓存有效期：{{cacheExpireText}}
                 </div>
-                <div class="glass-card alt-card">
-                    <h4>Git 克隆</h4>
-                    <p>使用 Git 命令克隆项目，配合 pip 安装依赖后即可启动。</p>
-                    <a href="one-editor.html" class="alt-btn">查看安装教程</a>
+
+                <div class="download-grid" v-if="releaseData.found">
+                    <div class="glass download-card">
+                        <h3>🟢 正式发布版</h3>
+                        <span class="tag-badge tag-stable">Stable</span>
+                        <span class="tag-badge tag-local" v-if="sourceMode==='local'">本地元数据</span>
+                        <div class="meta-text">
+                            Tag: {{releaseData.latest.tag_name}}<br>
+                            Commit‑Hash: {{releaseData.latest.short_commit}}<br>
+                            发布: {{releaseData.latest.published_at}}
+                        </div>
+                        <a class="btn-block btn-primary" :href="releaseData.latest.html_url" target="_blank">前往 Release
+                            页面</a>
+                        <div class="asset-list">
+                            <div class="asset-item" v-for="asset in releaseData.latest.assets" :key="asset.id">
+                                📦 <a :href="asset.browser_download_url" target="_blank">{{asset.name}}</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass download-card" v-if="releaseData.prerelease">
+                        <h3>🟡 预发布版</h3>
+                        <span class="tag-badge tag-prerelease">Pre‑Release</span>
+                        <span class="tag-badge tag-local" v-if="sourceMode==='local'">本地元数据</span>
+                        <div class="meta-text">
+                            Tag: {{releaseData.prerelease.tag_name}}<br>
+                            Commit‑Hash: {{releaseData.prerelease.short_commit}}<br>
+                            发布: {{releaseData.prerelease.published_at}}
+                        </div>
+                        <a class="btn-block btn-outline" :href="releaseData.prerelease.html_url" target="_blank">前往
+                            Pre‑Release 页面</a>
+                        <div class="asset-list">
+                            <div class="asset-item" v-for="asset in releaseData.prerelease.assets" :key="asset.id">
+                                📦 <a :href="asset.browser_download_url" target="_blank">{{asset.name}}</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-    
-            <!-- 安全提示 -->
-            <div class="glass-card"
-                style="padding: 1.5rem 1.8rem; margin-top: 2rem; border-color: rgba(217, 119, 6, 0.3); background: rgba(251, 191, 36, 0.08);">
-                <p style="color: var(--warning); font-size: 0.9rem;">
-                    <strong>⚠ 注意：</strong>
-                    该项目仍处于测试阶段，部分功能可能存在不稳定情况。
-                    AI 生成的代码仅供参考，请自行验证正确性。
-                </p>
+
+                <div class="glass" style="padding:1.6rem;margin-bottom:1.4rem;" v-if="!releaseData.found">
+                    <h3>⚠️ 获取版本信息失败</h3>
+                    <p class="platform-desc">GitHub API限流、网络异常，本地assets/release.json也加载失败。</p>
+                    <a class="btn-block btn-primary" href="https://github.com/Aoan2011/ONE-Editor/releases"
+                        target="_blank">打开 GitHub Releases</a>
+                </div>
+
+                <!-- 更新日志板块 -->
+                <div class="glass" style="padding:1.8rem;margin:1.4rem 0;">
+                    <h2 class="section-title" style="margin-top:0;">📜 更新日志 Changelog</h2>
+<div class="source-mode-tag">数据源：{{changelogSourceMode === 'github' ? 'GitHub' : '无（API请求失败）'}}</div>
+                    <div v-if="changelogList.length>0" class="changelog-block">
+                        <div class="changelog-item" v-for="(item,idx) in changelogList" :key="idx">
+                            <div class="changelog-version">{{item.tag}} · {{item.publish_time}}</div>
+                            <div class="changelog-body" v-html="item.bodyHtml"></div>
+                        </div>
+                    </div>
+                    <div v-else class="platform-desc">更新日志暂不可用。</div>
+                </div>
+
+                <!-- 浏览历史版本 -->
+                <div class="glass" style="padding:1.8rem;margin:1.4rem 0;">
+                    <h2 class="section-title" style="margin-top:0;">🕰️ 浏览历史版本</h2>
+                    <div class="history-list" v-if="historyReleases.length>0">
+                        <div class="history-item" v-for="(hr,hi) in historyReleases" :key="hi">
+                            <span class="history-tag">{{hr.tag_name}}</span>
+                            <div>
+                                <span class="history-time">{{hr.published_at}}</span>
+                                <a :href="hr.html_url" target="_blank"
+                                    style="margin-left:0.6rem;color:var(--accent)">查看</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div v-else class="platform-desc">暂无历史版本数据</div>
+                </div>
+
+                <div class="glass" style="padding:1.8rem;">
+                    <h2 class="section-title" style="margin-top:0;">🧑‍💻 从源码运行 / 编译</h2>
+                    <p>需要 Python 3.11+ 环境，推荐使用虚拟环境：</p>
+                    <div class="code-block">
+                        git clone https://github.com/Aoan2011/ONE-Editor.git
+                        cd ONE-Editor
+                        python -m venv venv
+
+                        # Windows
+                        venv\Scripts\activate
+                        # Linux / macOS
+                        source venv/bin/activate
+
+                        pip install -r requirements.txt
+                        python main.py
+                    </div>
+
+                    <h3 style="margin-top:1.4rem;">打包为独立可执行文件</h3>
+                    <div class="code-block">
+                        pip install pyinstaller
+                        pyinstaller one_editor.spec
+                    </div>
+                    <p style="margin-top:0.8rem;">打包产物输出到 <code>dist/</code> 目录。</p>
+                </div>
+
+                <div class="glass" style="padding:1.8rem;margin-top:1.4rem;">
+                    <h2 class="section-title" style="margin-top:0;">📋 说明</h2>
+                    <ul style="padding-left:1.4rem;color:var(--text-secondary);">
+                        <li>正式版 Stable 建议日常使用；Pre‑Release 为测试版本，可能存在不稳定问题。</li>
+                        <li>终端程序，打开后在终端内运行；Windows 建议使用 Windows Terminal。</li>
+                        <li>GitHub API存在IP限流，频繁刷新会自动切换本地assets静态文件。</li>
+                        <li>遇到问题可提交 GitHub Issue。</li>
+                    </ul>
+                </div>
             </div>
         </main>
-    
+
         <footer>
-            <p>&copy; 2026 One Editor by Aoan2011 |
-                <a href="index.html">首页</a> ·
-                <a href="one-editor.html">项目介绍</a> ·
-                <a href="https://github.com/Aoan2011/One-Editor" target="_blank">GitHub</a>
-            </p>
+            <p>&copy; 2026 Aoan2011. Built with passion for developers.</p>
         </footer>
-    
-        <script>
-            // ========== 深浅色主题切换（三页统一逻辑） ==========
-            const THEME_KEY = 'site_theme_preference';
-            const toggleBtn = document.getElementById('theme-toggle');
-            const themeIcon = document.getElementById('theme-icon');
+    </div>
 
-            function initTheme() {
-                const saved = localStorage.getItem(THEME_KEY);
-                if (saved) {
-                    document.documentElement.setAttribute('data-theme', saved);
-                } else {
-                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                    document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
-                }
-                updateIcon();
-            }
+    <script>
+        const { createApp, ref, computed, onMounted, onUnmounted, nextTick } = Vue;
 
-            function toggleTheme() {
-                const current = document.documentElement.getAttribute('data-theme');
-                const next = current === 'dark' ? 'light' : 'dark';
-                document.documentElement.setAttribute('data-theme', next);
-                localStorage.setItem(THEME_KEY, next);
-                updateIcon();
-            }
+        createApp({
+            setup() {
+                const isDark = ref(false);
+                const themeMode = ref('dark'); // dark / light / auto 默认深色
+                const THEME_KEY = 'site_theme_preference';
+                const GITHUB_REPO = "Aoan2011/ONE-Editor";
+                const CACHE_TTL = 1000 * 60 * 30; //30分钟缓存
 
-            function updateIcon() {
-                const current = document.documentElement.getAttribute('data-theme');
-                themeIcon.textContent = current === 'dark' ? '☀️' : '🌙';
-            }
-
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-                if (!localStorage.getItem(THEME_KEY)) {
-                    document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
-                    updateIcon();
-                }
-            });
-
-            toggleBtn.addEventListener('click', toggleTheme);
-            initTheme();
-
-            // ========== Release 本地缓存 + 自动同步 ==========
-            const CACHE_TTL = 3600 * 1000; // 1小时
-            const RELEASE_CACHE_KEY = 'one_editor_release_cache';
-            const REPO_OWNER = 'Aoan2011';
-            const REPO_NAME = 'One-Editor';
-            const API_URL = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/releases/latest`;
-
-            // 缓存工具
-            function getCache(key) {
-                try {
-                    const raw = localStorage.getItem(key);
-                    if (!raw) return null;
-                    const { value, timestamp } = JSON.parse(raw);
-                    if (Date.now() - timestamp > CACHE_TTL) {
-                        localStorage.removeItem(key);
-                        return null;
-                    }
-                    return { value, timestamp };
-                } catch (e) { return null; }
-            }
-
-            function setCache(key, value) {
-                try {
-                    localStorage.setItem(key, JSON.stringify({ value, timestamp: Date.now() }));
-                } catch (e) { }
-            }
-
-            function formatCacheTime(ts) {
-                return new Date(ts).toLocaleString('zh-CN');
-            }
-
-            // 工具函数
-            function formatFileSize(bytes) {
-                if (bytes < 1024) return bytes + ' B';
-                if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-                return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-            }
-
-            function formatDate(dateStr) {
-                return new Date(dateStr).toLocaleDateString('zh-CN', {
-                    year: 'numeric', month: '2-digit', day: '2-digit'
+                const mountainImages = [
+                    './assets/mountain/m1.jpg',
+                    './assets/mountain/m2.jpg',
+                    './assets/mountain/m3.jpg',
+                    './assets/mountain/m4.jpg',
+                    './assets/mountain/m5.jpg',
+                    './assets/mountain/m6.jpg',
+                    './assets/mountain/m7.jpg',
+                    './assets/mountain/m8.jpg',
+                    './assets/mountain/m9.jpg',
+                ];
+                const randomMountain = mountainImages[Math.floor(Math.random() * mountainImages.length)];
+                const backgroundStyle = computed(() => {
+                    return { backgroundImage: `url('${randomMountain}')` }
                 });
-            }
 
-            function parseChangelog(body) {
-                if (!body) return [];
-                return body.trim().split('\n').filter(l => l.trim()).slice(0, 8);
-            }
-
-            // 渲染数据
-            function renderRelease(data, fromCache = false) {
-                const btn = document.getElementById('download-btn');
-                const btnText = document.getElementById('download-btn-text');
-                const versionEl = document.getElementById('release-version');
-                const dateEl = document.getElementById('release-date');
-                const titleEl = document.getElementById('release-title');
-                const changelogEl = document.getElementById('changelog-list');
-                const hintEl = document.getElementById('cache-hint');
-
-                const exeAsset = data.assets.find(a =>
-                    a.name.endsWith('.exe') || a.name.toLowerCase().includes('windows')
-                );
-
-                if (!exeAsset) {
-                    btnText.textContent = '未找到 Windows 安装包';
-                    btn.href = `https://github.com/${REPO_OWNER}/${REPO_NAME}/releases/latest`;
-                    btn.target = '_blank';
-                    btn.removeAttribute('disabled');
-                    return;
+                const mouseX = ref(0);
+                const mouseY = ref(0);
+                const lightStyle = computed(() => ({ '--mx': `${mouseX.value}px`, '--my': `${mouseY.value}px` }));
+                function onMouseMove(e) {
+                    mouseX.value = e.clientX;
+                    mouseY.value = e.clientY;
                 }
 
-                versionEl.textContent = data.tag_name;
-                dateEl.textContent = formatDate(data.published_at);
-                titleEl.textContent = `One Editor ${data.tag_name} for Windows`;
-
-                btn.href = exeAsset.browser_download_url;
-                btn.removeAttribute('disabled');
-                btnText.textContent = `立即下载 (${formatFileSize(exeAsset.size)})`;
-
-                const log = parseChangelog(data.body);
-                changelogEl.innerHTML = log.length
-                    ? log.map(item =>
-                        `<li><span class="changelog-version">${data.tag_name}</span> ${item.replace(/^[-*]\s*/, '')}</li>`
-                    ).join('')
-                    : '<li>暂无更新说明</li>';
-
-                if (fromCache) {
-                    const cached = getCache(RELEASE_CACHE_KEY);
-                    if (cached) hintEl.textContent = `版本信息已缓存 · 更新于 ${formatCacheTime(cached.timestamp)}`;
-                } else {
-                    hintEl.textContent = '';
-                }
-            }
-
-            // 错误降级
-            function showFallback() {
-                const btn = document.getElementById('download-btn');
-                document.getElementById('download-btn-text').textContent = '获取失败，点击前往 GitHub 下载';
-                btn.href = `https://github.com/${REPO_OWNER}/${REPO_NAME}/releases/latest`;
-                btn.target = '_blank';
-                btn.removeAttribute('disabled');
-                document.getElementById('release-version').textContent = '未知';
-                document.getElementById('release-date').textContent = '未知';
-                document.getElementById('changelog-list').innerHTML = '<li>加载失败，请前往 GitHub Release 查看详情</li>';
-            }
-
-            // 静默刷新
-            async function fetchReleaseSilent() {
-                try {
-                    const res = await fetch(API_URL, { cache: 'no-cache' });
-                    if (!res.ok) throw new Error();
-                    const data = await res.json();
-                    setCache(RELEASE_CACHE_KEY, data);
-                    renderRelease(data, false);
-                } catch (e) { console.warn('Release 刷新失败，继续使用缓存', e); }
-            }
-
-            // 主加载逻辑：先缓存，后静默刷新
-            async function fetchLatestRelease() {
-                const cached = getCache(RELEASE_CACHE_KEY);
-                if (cached) {
-                    renderRelease(cached.value, true);
-                    fetchReleaseSilent();
-                    return;
+                const scrollPercent = ref(0);
+                function updateScrollProgress() {
+                    const st = window.scrollY;
+                    const dh = document.documentElement.scrollHeight - window.innerHeight;
+                    scrollPercent.value = dh > 0 ? (st / dh) * 100 : 0;
                 }
 
-                try {
-                    const res = await fetch(API_URL);
-                    if (!res.ok) throw new Error();
-                    const data = await res.json();
-                    setCache(RELEASE_CACHE_KEY, data);
-                    renderRelease(data, false);
-                } catch (e) {
-                    console.error('获取 Release 失败:', e);
-                    showFallback();
+                const shrinkNavbar = ref(false);
+                let lastScrollY = 0;
+                const SCROLL_THRESHOLD = 80;
+                function handleScrollHideNav() {
+                    const curr = window.scrollY;
+                    updateScrollProgress();
+                    if (curr < 10) {
+                        shrinkNavbar.value = false;
+                    } else if (curr > lastScrollY && curr > SCROLL_THRESHOLD) {
+                        shrinkNavbar.value = true;
+                    } else {
+                        shrinkNavbar.value = false;
+                    }
+                    lastScrollY = curr;
                 }
-            }
+                function toggleShrinkNavbar() {
+                    shrinkNavbar.value = !shrinkNavbar.value;
+                }
 
-            document.addEventListener('DOMContentLoaded', fetchLatestRelease);
-        </script>
-    </body>
-    
-    </html>
+                const beijingTime = ref('');
+                function updateBeijingTime() {
+                    const d = new Date();
+                    beijingTime.value = d.toLocaleString("zh-CN", { timeZone: "Asia/Shanghai" });
+                }
+
+                //加载条
+                const isPageLoading = ref(false);
+                const loadingBarWidth = ref(0);
+                async function triggerLoadingBar() {
+                    isPageLoading.value = true;
+                    loadingBarWidth.value = 30;
+                    await nextTick();
+                    loadingBarWidth.value = 85;
+                }
+                async function finishLoadingBar() {
+                    loadingBarWidth.value = 100;
+                    await nextTick();
+                    setTimeout(() => {
+                        isPageLoading.value = false;
+                        loadingBarWidth.value = 0;
+                    }, 220);
+                }
+
+                //页面入场动画
+                const pageMounted = ref(false);
+
+                //版本数据源
+                const sourceMode = ref("auto");
+                const changelogSourceMode = ref("auto");
+                const fetchLoading = ref(false);
+                const fetchStep = ref("");
+                const cacheExpireText = ref("");
+
+                const releaseData = ref({
+                    found: false,
+                    latest: null,
+                    prerelease: null
+                });
+                const changelogList = ref([]);
+                const historyReleases = ref([]);
+
+                function formatReleaseObj(obj) {
+                    if (!obj) return null;
+                    return {
+                        ...obj,
+                        short_commit: obj.target_commitish ? obj.target_commitish.slice(0, 7) : "-",
+                        published_at: new Date(obj.published_at).toLocaleString("zh-CN")
+                    }
+                }
+
+                async function loadLocalRelease() {
+                    const resp = await fetch("./assets/release.json");
+                    if (!resp.ok) throw new Error("local release.json not found");
+                    return await resp.json();
+                }
+
+                async function fetchGitHubReleases() {
+                    fetchLoading.value = true;
+                    fetchStep.value = "[1/3] 请求 GitHub Releases API...";
+                    await triggerLoadingBar();
+                    try {
+                        const resp = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/releases?per_page=20`);
+                        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                        const rawReleases = await resp.json();
+
+                        let stable = null;
+                        let pre = null;
+                        const history = [];
+                        const clist = [];
+                        for (const r of rawReleases) {
+                            if (r.draft) continue;
+                            history.push({ tag_name: r.tag_name, html_url: r.html_url, published_at: new Date(r.published_at).toLocaleString("zh-CN") });
+                            clist.push({
+                                tag: r.tag_name,
+                                publish_time: new Date(r.published_at).toLocaleString("zh-CN"),
+                                bodyHtml: (r.body || "").replace(/\n/g, "<br/>")
+                            })
+                            if (!r.prerelease && !stable) stable = r;
+                            if (r.prerelease && !pre) pre = r;
+                        }
+                        if (!stable) throw new Error("no stable release");
+
+                        sourceMode.value = "github";
+                        changelogSourceMode.value = "github";
+                        releaseData.value = { found: true, latest: formatReleaseObj(stable), prerelease: formatReleaseObj(pre) };
+                        changelogList.value = clist;
+                        historyReleases.value = history;
+                    } catch (err) {
+                        console.warn("GitHub api fail，release尝试本地回退", err);
+                        fetchStep.value = "[2/3] 切换读取本地assets/release.json";
+                        // === changelog 不再走本地，直接清空 ===
+                        changelogList.value = [];
+                        changelogSourceMode.value = "";
+                        try {
+                            const localRel = await loadLocalRelease();
+                            sourceMode.value = "local";
+                            releaseData.value = { found: true, latest: formatReleaseObj(localRel.latest), prerelease: formatReleaseObj(localRel.prerelease) };
+                            // 历史版本、changelog全部清空，不读取本地changelog.json
+                            historyReleases.value = [];
+                        } catch (e2) {
+                            console.error("local release also fail", e2);
+                            releaseData.value.found = false;
+                        }
+                    } finally {
+                        fetchLoading.value = false;
+                        await finishLoadingBar();
+                    }
+                }
+
+                //主题系统
+                function applyTheme(mode) {
+                    themeMode.value = mode;
+                    let effective;
+                    if (mode === 'auto') {
+                        effective = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                    } else {
+                        effective = mode;
+                    }
+                    document.documentElement.setAttribute('data-theme', effective);
+                    localStorage.setItem(THEME_KEY, mode);
+                }
+                function setTheme(mode) {
+                    applyTheme(mode);
+                }
+                function initTheme() {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved) {
+                        applyTheme(saved);
+                    } else {
+                        applyTheme('dark'); //默认深色
+                    }
+                }
+
+                let timeTimer = null;
+                onMounted(async () => {
+                    initTheme();
+                    await fetchGitHubReleases();
+                    window.addEventListener('mousemove', onMouseMove);
+                    window.addEventListener('scroll', handleScrollHideNav);
+                    updateBeijingTime();
+                    timeTimer = setInterval(updateBeijingTime, 1000);
+                    nextTick(() => {
+                        pageMounted.value = true;
+                    })
+                    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+                        if (themeMode.value === 'auto') {
+                            applyTheme('auto');
+                        }
+                    });
+                });
+
+                onUnmounted(() => {
+                    window.removeEventListener('mousemove', onMouseMove);
+                    window.removeEventListener('scroll', handleScrollHideNav);
+                    clearInterval(timeTimer);
+                });
+
+                return {
+                    themeMode, setTheme,
+                    backgroundStyle, lightStyle,
+                    scrollPercent, shrinkNavbar, toggleShrinkNavbar,
+                    beijingTime, fetchLoading, fetchStep,
+                    sourceMode, changelogSourceMode, cacheExpireText,
+                    releaseData, changelogList, historyReleases,
+                    isPageLoading, loadingBarWidth, pageMounted
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+
+</html>

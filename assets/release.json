@@ -1,0 +1,28 @@
+{
+    "latest": {
+        "tag_name": "v1.0.1",
+        "target_commitish": "main",
+        "published_at": "2026-08-04T21:07:29Z",
+        "html_url": "https://github.com/Aoan2011/One-Editor/releases/tag/v1.0.1",
+        "assets": [
+            {
+                "id": 1,
+                "name": "One-Editor_v1.0.1_zh_cn.exe",
+                "browser_download_url": "./assets/bin/One-Editor_v1.0.1_zh_cn.exe"
+            }
+        ]
+    },
+    "prerelease": {
+        "tag_name": "v1.0.0.alpha.1",
+        "target_commitish": "main",
+        "published_at": "2026-07-31T21:25:43Z",
+        "html_url": "https://github.com/Aoan2011/One-Editor/releases/tag/v1.0.0.alpha.1",
+        "assets": [
+            {
+                "id": 1,
+                "name": "ONE-Editor-win.exe",
+                "browser_download_url": "./assets/bin/one-editor v1.0.0.alpha.1_zh-cn.exe"
+            }
+        ]
+    }
+}
