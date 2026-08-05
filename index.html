@@ -23,6 +23,7 @@
             --accent: #10b981;
             --accent-soft: rgba(16, 185, 129, 0.12);
             --gradient-main: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --loading-bar-color: #ef4444;
 
             --glass-bg: rgba(255, 255, 255, 0.20);
             --glass-border: rgba(255, 255, 255, 0.35);
@@ -62,19 +63,30 @@
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
-            padding-bottom: 120px;
+            padding-bottom: 140px;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* 顶部阅读进度条 */
+        /* 页面入场动画 */
+        .page-fade {
+            opacity: 0;
+            transform: translateY(14px);
+            transition: opacity 0.45s ease, transform 0.45s ease;
+        }
+
+        .page-fade.in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         .reading-progress {
             position: fixed;
-            top: 0;
+            top: 6px;
             left: 0;
-            height: 4px;
+            height: 3px;
             background: var(--gradient-main);
             width: 0%;
-            z-index: 9999;
+            z-index: 9998;
         }
 
         .bg-mountains {
@@ -105,7 +117,6 @@
                     rgba(5, 7, 13, 0.92) 100%);
         }
 
-        /* 鼠标跟随点光源 */
         .mouse-light {
             position: fixed;
             inset: 0;
@@ -165,29 +176,33 @@
             border-radius: inherit;
         }
 
-        /* 底部悬浮导航栏 */
+        /* ========== 底部导航栏：低矮长条模式（和download完全一致） ========== */
         .nav-toolbar {
             position: fixed;
-            bottom: 2rem;
+            bottom: 1.6rem;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translateX(-50%) translateY(0);
             z-index: 1000;
-            transition: transform 0.3s ease;
+            transition: transform 0.34s cubic-bezier(0.2, 0, 0.2, 1);
+            cursor: pointer;
+            width: 92%;
+            max-width: 760px;
         }
 
-        .nav-toolbar.hide-bar {
-            transform: translate(-50%, 140%);
+        .nav-toolbar.shrink-mode {
+            transform: translateX(-50%) translateY(64px) scale(0.92);
         }
 
         .nav-toolbar .glass {
-            padding: 10px 16px;
-            border-radius: 60px;
+            padding: 14px 18px;
+            border-radius: 999px;
         }
 
         .nav-wrap {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            justify-content: space-between;
+            gap: 12px;
             position: relative;
             z-index: 2;
             flex-wrap: nowrap;
@@ -195,7 +210,7 @@
         }
 
         .time-widget {
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             color: var(--text-secondary);
             white-space: nowrap;
             padding: 0 0.4rem;
@@ -204,18 +219,20 @@
 
         .nav-items {
             display: flex;
-            gap: 0.4rem;
+            gap: 6px;
             align-items: center;
+            flex-wrap: nowrap;
         }
 
         .nav-item {
-            padding: 0.7rem 1.4rem;
-            border-radius: 14px;
+            padding: 10px 14px;
+            border-radius: 999px;
             text-decoration: none;
             color: var(--text-primary);
             font-weight: 500;
             font-size: 0.95rem;
             transition: all 0.25s ease;
+            white-space: nowrap;
         }
 
         .nav-item:hover {
@@ -228,22 +245,33 @@
             background: var(--accent-soft);
         }
 
+        .theme-group {
+            display: flex;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
         .theme-btn {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border: none;
             background: transparent;
             cursor: pointer;
-            font-size: 1.1rem;
+            font-size: 1rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 12px;
+            border-radius: 999px;
             transition: background 0.2s;
         }
 
         .theme-btn:hover {
             background: var(--accent-soft);
+        }
+
+        .theme-btn.active {
+            background: var(--accent-soft);
+            color: var(--accent);
         }
 
         main {
@@ -480,7 +508,6 @@
             max-width: 1080px;
             margin: 0 auto;
             padding: 2rem;
-            padding-bottom: 0;
             text-align: center;
             color: var(--text-muted);
             font-size: 0.85rem;
@@ -503,12 +530,18 @@
             }
 
             .time-widget {
-                font-size: 0.75rem;
+                font-size: 0.7rem;
             }
 
             .nav-item {
-                padding: 0.6rem 0.8rem;
-                font-size: 0.85rem;
+                padding: 0.5rem 0.65rem;
+                font-size: 0.82rem;
+            }
+
+            .theme-btn {
+                width: 34px;
+                height: 34px;
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -516,15 +549,11 @@
 
 <body>
     <div id="app">
-        <!-- 顶部阅读进度条 -->
         <div class="reading-progress" :style="{width: scrollPercent + '%'}"></div>
-        <!-- 鼠标点光源 -->
         <div class="mouse-light" :style="lightStyle"></div>
-        <!-- 本地背景图 -->
         <div class="bg-mountains" :style="backgroundStyle"></div>
 
-        <!-- 底部悬浮导航栏 -->
-        <div class="nav-toolbar" :class="{'hide-bar': hideNavbar}">
+        <div class="nav-toolbar" :class="{'shrink-mode': shrinkNavbar}" @click="toggleShrinkNavbar">
             <div class="glass">
                 <div class="vibrancy-effect"></div>
                 <div class="nav-wrap">
@@ -534,14 +563,19 @@
                         <a href="one-editor.html" class="nav-item">One Editor</a>
                         <a href="download.html" class="nav-item">下载</a>
                     </nav>
-                    <button class="theme-btn" @click="toggleTheme" title="切换深浅色">
-                        <span>{{ isDark ? '☀️' : '🌙' }}</span>
-                    </button>
+                    <div class="theme-group">
+                        <button class="theme-btn" :class="{'active':themeMode==='dark'}" @click="setTheme('dark')"
+                            title="深色">🌙</button>
+                        <button class="theme-btn" :class="{'active':themeMode==='light'}" @click="setTheme('light')"
+                            title="浅色">☀️</button>
+                        <button class="theme-btn" :class="{'active':themeMode==='auto'}" @click="setTheme('auto')"
+                            title="跟随系统">🔄</button>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <main>
+        <main class="page-fade" :class="{'in':pageMounted}">
             <section class="hero">
                 <div class="avatar-wrapper">
                     <img src="./assets/icon.jpg" alt="个人头像">
@@ -565,7 +599,7 @@
                     <div class="vibrancy-effect"></div>
                     <div class="glass-card-inner card-content">
                         <p>
-                            <strong>利用暑假时间</strong>，作为一名高中生，主攻 <em>One‑Editor
+                            <strong>利用暑假时间</strong>，作为一名高中生，主攻 <em>One-Editor
                                 技术方向</em>，热衷于创造高效的开发工具，专注终端UI、代码编辑器与开发者体验方向。
                         </p>
                         <p>
@@ -669,118 +703,135 @@
     </div>
 
     <script>
-    const { createApp, ref, computed, onMounted, onUnmounted } = Vue;
+        const { createApp, ref, computed, onMounted, onUnmounted, nextTick } = Vue;
 
-    createApp({
-        setup() {
-            const isDark = ref(false);
-            const THEME_KEY = 'site_theme_preference';
+        createApp({
+            setup() {
+                const themeMode = ref('dark'); // dark / light / auto 默认深色
+                const THEME_KEY = 'site_theme_preference';
 
-            // 本地背景 m1‑m9
-            const mountainImages = [
-                './assets/mountain/m1.jpg',
-                './assets/mountain/m2.jpg',
-                './assets/mountain/m3.jpg',
-                './assets/mountain/m4.jpg',
-                './assets/mountain/m5.jpg',
-                './assets/mountain/m6.jpg',
-                './assets/mountain/m7.jpg',
-                './assets/mountain/m8.jpg',
-                './assets/mountain/m9.jpg',
-            ];
-            const randomMountain = mountainImages[Math.floor(Math.random() * mountainImages.length)];
-            const backgroundStyle = computed(() => ({
-                backgroundImage: `url('${randomMountain}')`
-            }));
+                // 本地背景 m1-m9
+                const mountainImages = [
+                    './assets/mountain/m1.jpg',
+                    './assets/mountain/m2.jpg',
+                    './assets/mountain/m3.jpg',
+                    './assets/mountain/m4.jpg',
+                    './assets/mountain/m5.jpg',
+                    './assets/mountain/m6.jpg',
+                    './assets/mountain/m7.jpg',
+                    './assets/mountain/m8.jpg',
+                    './assets/mountain/m9.jpg',
+                ];
+                const randomMountain = mountainImages[Math.floor(Math.random() * mountainImages.length)];
+                const backgroundStyle = computed(() => ({
+                    backgroundImage: `url('${randomMountain}')`
+                }));
 
-            // 鼠标点光源
-            const mouseX = ref(0);
-            const mouseY = ref(0);
-            const lightStyle = computed(() => ({
-                '--mx': `${mouseX.value}px`,
-                '--my': `${mouseY.value}px`,
-            }));
-            function onMouseMove(e) {
-                mouseX.value = e.clientX;
-                mouseY.value = e.clientY;
-            }
-
-            // 阅读进度
-            const scrollPercent = ref(0);
-            function updateScrollProgress() {
-                const scrollTop = window.scrollY;
-                const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-                scrollPercent.value = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-            }
-
-            // 底部栏自动隐藏
-            const hideNavbar = ref(false);
-            let lastScrollY = 0;
-            const SCROLL_THRESHOLD = 80;
-            function handleScrollHideNav() {
-                const currentY = window.scrollY;
-                updateScrollProgress();
-                if (currentY < 10) {
-                    hideNavbar.value = false;
-                } else if (currentY > lastScrollY && currentY > SCROLL_THRESHOLD) {
-                    hideNavbar.value = true;
-                } else {
-                    hideNavbar.value = false;
+                // 鼠标点光源
+                const mouseX = ref(0);
+                const mouseY = ref(0);
+                const lightStyle = computed(() => ({
+                    '--mx': `${mouseX.value}px`,
+                    '--my': `${mouseY.value}px`,
+                }));
+                function onMouseMove(e) {
+                    mouseX.value = e.clientX;
+                    mouseY.value = e.clientY;
                 }
-                lastScrollY = currentY;
-            }
 
-            // 北京时间 UTC+8【修复破折号bug】
-            const beijingTime = ref('');
-            function updateBeijingTime() {
-                const d = new Date();
-                beijingTime.value = d.toLocaleString("zh-CN", { timeZone: "Asia/Shanghai" });
-            }
-
-            // 主题
-            const initTheme = () => {
-                const saved = localStorage.getItem(THEME_KEY);
-                if (saved) {
-                    isDark.value = saved === 'dark';
-                } else {
-                    isDark.value = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                // 阅读进度
+                const scrollPercent = ref(0);
+                function updateScrollProgress() {
+                    const scrollTop = window.scrollY;
+                    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                    scrollPercent.value = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
                 }
-                document.documentElement.setAttribute('data-theme', isDark.value ? 'dark' : 'light');
-            };
-            const toggleTheme = () => {
-                isDark.value = !isDark.value;
-                document.documentElement.setAttribute('data-theme', isDark.value ? 'dark' : 'light');
-                localStorage.setItem(THEME_KEY, isDark.value ? 'dark' : 'light');
-            };
 
-            let timeTimer = null;
-            onMounted(() => {
-                initTheme();
-                window.addEventListener('mousemove', onMouseMove);
-                window.addEventListener('scroll', handleScrollHideNav);
-                updateBeijingTime();
-                timeTimer = setInterval(updateBeijingTime, 1000);
-
-                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-                    if (!localStorage.getItem(THEME_KEY)) {
-                        isDark.value = e.matches;
-                        document.documentElement.setAttribute('data-theme', isDark.value ? 'dark' : 'light');
+                // 底部栏收缩逻辑 和download保持一致
+                const shrinkNavbar = ref(false);
+                let lastScrollY = 0;
+                const SCROLL_THRESHOLD = 80;
+                function handleScrollHideNav() {
+                    const curr = window.scrollY;
+                    updateScrollProgress();
+                    if (curr < 10) {
+                        shrinkNavbar.value = false;
+                    } else if (curr > lastScrollY && curr > SCROLL_THRESHOLD) {
+                        shrinkNavbar.value = true;
+                    } else {
+                        shrinkNavbar.value = false;
                     }
+                    lastScrollY = curr;
+                }
+                function toggleShrinkNavbar() {
+                    shrinkNavbar.value = !shrinkNavbar.value;
+                }
+
+                // 北京时间 UTC+8
+                const beijingTime = ref('');
+                function updateBeijingTime() {
+                    const d = new Date();
+                    beijingTime.value = d.toLocaleString("zh-CN", { timeZone: "Asia/Shanghai" });
+                }
+
+                //页面入场动画
+                const pageMounted = ref(false);
+
+                //主题系统（和download页面完全统一，支持auto）
+                function applyTheme(mode) {
+                    themeMode.value = mode;
+                    let effective;
+                    if (mode === 'auto') {
+                        effective = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                    } else {
+                        effective = mode;
+                    }
+                    document.documentElement.setAttribute('data-theme', effective);
+                    localStorage.setItem(THEME_KEY, mode);
+                }
+                function setTheme(mode) {
+                    applyTheme(mode);
+                }
+                function initTheme() {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved) {
+                        applyTheme(saved);
+                    } else {
+                        applyTheme('dark'); //默认深色
+                    }
+                }
+
+                let timeTimer = null;
+                onMounted(async () => {
+                    initTheme();
+                    window.addEventListener('mousemove', onMouseMove);
+                    window.addEventListener('scroll', handleScrollHideNav);
+                    updateBeijingTime();
+                    timeTimer = setInterval(updateBeijingTime, 1000);
+                    await nextTick(() => {
+                        pageMounted.value = true;
+                    })
+                    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+                        if (themeMode.value === 'auto') {
+                            applyTheme('auto');
+                        }
+                    });
                 });
-            });
 
-            onUnmounted(() => {
-                window.removeEventListener('mousemove', onMouseMove);
-                window.removeEventListener('scroll', handleScrollHideNav);
-                clearInterval(timeTimer);
-            });
+                onUnmounted(() => {
+                    window.removeEventListener('mousemove', onMouseMove);
+                    window.removeEventListener('scroll', handleScrollHideNav);
+                    clearInterval(timeTimer);
+                });
 
-            return {
-                isDark, toggleTheme, backgroundStyle, lightStyle,
-                scrollPercent, hideNavbar, beijingTime
-            };
-        }
-    }).mount('#app');
+                return {
+                    themeMode, setTheme,
+                    backgroundStyle, lightStyle,
+                    scrollPercent, shrinkNavbar, toggleShrinkNavbar,
+                    beijingTime, pageMounted
+                };
+            }
+        }).mount('#app');
     </script>
 </body>
 

@@ -733,7 +733,7 @@
                         <span class="tag-badge tag-local" v-if="sourceMode==='local'">本地元数据</span>
                         <div class="meta-text">
                             Tag: {{releaseData.latest.tag_name}}<br>
-                            Commit‑Hash: {{releaseData.latest.short_commit}}<br>
+                            Commit-Hash: {{releaseData.latest.short_commit}}<br>
                             发布: {{releaseData.latest.published_at}}
                         </div>
                         <a class="btn-block btn-primary" :href="releaseData.latest.html_url" target="_blank">前往 Release
@@ -747,15 +747,15 @@
 
                     <div class="glass download-card" v-if="releaseData.prerelease">
                         <h3>🟡 预发布版</h3>
-                        <span class="tag-badge tag-prerelease">Pre‑Release</span>
+                        <span class="tag-badge tag-prerelease">Pre-Release</span>
                         <span class="tag-badge tag-local" v-if="sourceMode==='local'">本地元数据</span>
                         <div class="meta-text">
                             Tag: {{releaseData.prerelease.tag_name}}<br>
-                            Commit‑Hash: {{releaseData.prerelease.short_commit}}<br>
+                            Commit-Hash: {{releaseData.prerelease.short_commit}}<br>
                             发布: {{releaseData.prerelease.published_at}}
                         </div>
                         <a class="btn-block btn-outline" :href="releaseData.prerelease.html_url" target="_blank">前往
-                            Pre‑Release 页面</a>
+                            Pre-Release 页面</a>
                         <div class="asset-list">
                             <div class="asset-item" v-for="asset in releaseData.prerelease.assets" :key="asset.id">
                                 📦 <a :href="asset.browser_download_url" target="_blank">{{asset.name}}</a>
@@ -828,7 +828,7 @@
                 <div class="glass" style="padding:1.8rem;margin-top:1.4rem;">
                     <h2 class="section-title" style="margin-top:0;">📋 说明</h2>
                     <ul style="padding-left:1.4rem;color:var(--text-secondary);">
-                        <li>正式版 Stable 建议日常使用；Pre‑Release 为测试版本，可能存在不稳定问题。</li>
+                        <li>正式版 Stable 建议日常使用；Pre-Release 为测试版本，可能存在不稳定问题。</li>
                         <li>终端程序，打开后在终端内运行；Windows 建议使用 Windows Terminal。</li>
                         <li>GitHub API存在IP限流，频繁刷新会自动切换本地assets静态文件。</li>
                         <li>遇到问题可提交 GitHub Issue。</li>

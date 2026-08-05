@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>One‑Editor | Aoan2011</title>
+    <title>One-Editor | Aoan2011</title>
     <link rel="icon" href="./assets/icon.jpg" type="image/jpeg">
     <link rel="shortcut icon" href="./assets/icon.jpg" type="image/jpeg">
     <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
@@ -23,7 +24,7 @@
             --accent: #10b981;
             --accent-soft: rgba(16, 185, 129, 0.12);
             --gradient-main: linear-gradient(135deg, #10b981 0%, #059669 100%);
-
+            --loading-bar-color: #ef4444;
             --glass-bg: rgba(255, 255, 255, 0.20);
             --glass-border: rgba(255, 255, 255, 0.35);
             --glass-shadow: 0px 6px 30px 0px rgba(0, 0, 0, 0.12);
@@ -40,7 +41,6 @@
             --accent: #34d399;
             --accent-soft: rgba(52, 211, 153, 0.14);
             --gradient-main: linear-gradient(135deg, #34d399 0%, #10b981 100%);
-
             --glass-bg: rgba(22, 26, 38, 0.20);
             --glass-border: rgba(255, 255, 255, 0.12);
             --glass-shadow: 0px 6px 30px 0px rgba(0, 0, 0, 0.45);
@@ -49,7 +49,8 @@
             --glass-blur: 2px;
         }
 
-        html, body {
+        html,
+        body {
             height: 100%;
         }
 
@@ -61,18 +62,47 @@
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
-            padding-bottom: 120px;
+            padding-bottom: 140px;
             transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* 顶部红色加载条 */
+        .top-loading-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 5px;
+            background-color: var(--loading-bar-color);
+            z-index: 9999;
+            width: 0%;
+            transform: translateY(-100%);
+            transition: transform 0.22s ease, width 0.35s ease;
+        }
+
+        .top-loading-bar.active {
+            transform: translateY(0);
+        }
+
+        /* 页面入场动画 */
+        .page-fade {
+            opacity: 0;
+            transform: translateY(14px);
+            transition: opacity 0.45s ease, transform 0.45s ease;
+        }
+
+        .page-fade.in {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .reading-progress {
             position: fixed;
-            top: 0;
+            top: 6px;
             left: 0;
-            height: 4px;
+            height: 3px;
             background: var(--gradient-main);
             width: 0%;
-            z-index: 9999;
+            z-index: 9998;
         }
 
         .bg-mountains {
@@ -89,22 +119,18 @@
             content: "";
             position: absolute;
             inset: 0;
-            background: linear-gradient(
-                to bottom,
-                rgba(245, 247, 250, 0.82) 0%,
-                rgba(245, 247, 250, 0.64) 45%,
-                rgba(245, 247, 250, 0.88) 100%
-            );
+            background: linear-gradient(to bottom,
+                    rgba(245, 247, 250, 0.82) 0%,
+                    rgba(245, 247, 250, 0.64) 45%,
+                    rgba(245, 247, 250, 0.88) 100%);
             transition: background 0.3s ease;
         }
 
         [data-theme="dark"] .bg-mountains::after {
-            background: linear-gradient(
-                to bottom,
-                rgba(5, 7, 13, 0.88) 0%,
-                rgba(5, 7, 13, 0.72) 45%,
-                rgba(5, 7, 13, 0.92) 100%
-            );
+            background: linear-gradient(to bottom,
+                    rgba(5, 7, 13, 0.88) 0%,
+                    rgba(5, 7, 13, 0.72) 45%,
+                    rgba(5, 7, 13, 0.92) 100%);
         }
 
         .mouse-light {
@@ -115,9 +141,11 @@
             opacity: 0;
             transition: opacity 0.25s ease;
         }
+
         body:hover .mouse-light {
             opacity: 1;
         }
+
         .mouse-light::before {
             content: '';
             position: absolute;
@@ -126,11 +154,12 @@
             width: 320px;
             height: 320px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,255,255,0.18) 0%, transparent 70%);
-            transform: translate(-50%,-50%);
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.18) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
         }
+
         [data-theme="dark"] .mouse-light::before {
-            background: radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%);
         }
 
         .glass {
@@ -153,36 +182,42 @@
             transform: scale(1.015);
         }
 
-        .glass > .vibrancy-effect {
+        .glass>.vibrancy-effect {
             position: absolute;
             inset: 0;
-            background: radial-gradient(circle at center, rgba(255,255,255,0.08) 0%, transparent 70%);
+            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
             mix-blend-mode: overlay;
             pointer-events: none;
             border-radius: inherit;
         }
 
+        /* ========== 底部导航栏：低矮长条模式（与download完全一致） ========== */
         .nav-toolbar {
             position: fixed;
-            bottom: 2rem;
+            bottom: 1.6rem;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translateX(-50%) translateY(0);
             z-index: 1000;
-            transition: transform 0.3s ease;
+            transition: transform 0.34s cubic-bezier(0.2, 0, 0.2, 1);
+            cursor: pointer;
+            width: 92%;
+            max-width: 760px;
         }
-        .nav-toolbar.hide-bar {
-            transform: translate(-50%, 140%);
+
+        .nav-toolbar.shrink-mode {
+            transform: translateX(-50%) translateY(64px) scale(0.92);
         }
 
         .nav-toolbar .glass {
-            padding: 10px 16px;
-            border-radius: 60px;
+            padding: 14px 18px;
+            border-radius: 999px;
         }
 
         .nav-wrap {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            justify-content: space-between;
+            gap: 12px;
             position: relative;
             z-index: 2;
             flex-wrap: nowrap;
@@ -190,7 +225,7 @@
         }
 
         .time-widget {
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             color: var(--text-secondary);
             white-space: nowrap;
             padding: 0 0.4rem;
@@ -199,18 +234,20 @@
 
         .nav-items {
             display: flex;
-            gap: 0.4rem;
+            gap: 6px;
             align-items: center;
+            flex-wrap: nowrap;
         }
 
         .nav-item {
-            padding: 0.7rem 1.4rem;
-            border-radius: 14px;
+            padding: 10px 14px;
+            border-radius: 999px;
             text-decoration: none;
             color: var(--text-primary);
             font-weight: 500;
             font-size: 0.95rem;
             transition: all 0.25s ease;
+            white-space: nowrap;
         }
 
         .nav-item:hover {
@@ -223,21 +260,33 @@
             background: var(--accent-soft);
         }
 
+        .theme-group {
+            display: flex;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
         .theme-btn {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border: none;
             background: transparent;
             cursor: pointer;
-            font-size: 1.1rem;
+            font-size: 1rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 12px;
+            border-radius: 999px;
             transition: background 0.2s;
         }
+
         .theme-btn:hover {
             background: var(--accent-soft);
+        }
+
+        .theme-btn.active {
+            background: var(--accent-soft);
+            color: var(--accent);
         }
 
         main {
@@ -250,151 +299,188 @@
 
         .hero-page {
             text-align: center;
-            margin-bottom:2rem;
+            margin-bottom: 2rem;
         }
+
         .ascii-art-block {
             display: inline-block;
             padding: 1rem 1.4rem;
             margin-bottom: 1.2rem;
         }
+
         .ascii-art-block pre {
             font-family: "Consolas", "Monaco", "JetBrains Mono", monospace;
             font-size: 0.72rem;
             line-height: 1.25;
             white-space: pre;
             color: var(--text-primary);
-            margin:0;
+            margin: 0;
         }
+
         .hero-page h1 {
-            font-size:2.6rem;
-            margin-bottom:0.8rem;
+            font-size: 2.6rem;
+            margin-bottom: 0.8rem;
             background: var(--gradient-main);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+
         .hero-page p {
-            color:var(--text-secondary);
-            font-size:1.1rem;
-            max-width:700px;
-            margin:0 auto 1.4rem;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto 1.4rem;
         }
+
         .btn-group {
-            display:flex;
-            gap:1rem;
-            justify-content:center;
-            flex-wrap:wrap;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
         }
+
         .btn-primary {
-            padding:0.75rem 1.8rem;
-            background:var(--gradient-main);
-            color:white;
-            text-decoration:none;
-            border-radius:12px;
-            font-weight:600;
+            padding: 0.75rem 1.8rem;
+            background: var(--gradient-main);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
         }
+
         .btn-ghost {
-            padding:0.75rem 1.8rem;
-            color:var(--text-primary);
-            text-decoration:none;
-            border-radius:12px;
+            padding: 0.75rem 1.8rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            border-radius: 12px;
         }
 
         /* 降级状态提示 */
         .source-status {
-            margin-bottom:1.6rem;
-            padding:0.9rem 1.4rem;
+            margin-bottom: 1.6rem;
+            padding: 0.9rem 1.4rem;
         }
+
         .status-line {
-            display:flex;
-            align-items:center;
-            gap:0.7rem;
-            flex-wrap:wrap;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            flex-wrap: wrap;
         }
+
         .status-dot {
-            width:12px;
-            height:12px;
-            border-radius:50%;
-            flex-shrink:0;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
         }
-        .dot-github {background:#22c55e;}
-        .dot-cache {background:#eab308;}
-        .dot-local {background:#ef4444;}
-        .dot-loading {background:#6366f1;}
+
+        .dot-github {
+            background: #22c55e;
+        }
+
+        .dot-cache {
+            background: #eab308;
+        }
+
+        .dot-local {
+            background: #ef4444;
+        }
+
+        .dot-loading {
+            background: #6366f1;
+        }
 
         .source-select {
             padding: 0.35rem 0.6rem;
             border-radius: 8px;
-            border:1px solid var(--glass-border);
+            border: 1px solid var(--glass-border);
             background: var(--glass-bg);
             color: var(--text-primary);
             backdrop-filter: blur(4px);
-            outline:none;
-            cursor:pointer;
+            outline: none;
+            cursor: pointer;
         }
+
         .source-select:focus {
             border-color: var(--accent);
         }
 
-        /*==== 高级加载动画 ====*/
-        .loader-wrap{
-            padding:4rem 2rem;
-            display:flex;
-            flex-direction:column;
-            align-items:center;
-            gap:1.2rem;
+        /====高级加载动画====/ .loader-wrap {
+            padding: 4rem 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.2rem;
         }
-        .gradient-spinner{
-            width:56px;
-            height:56px;
-            border-radius:50%;
+
+        .gradient-spinner {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
             background: conic-gradient(var(--accent), transparent 30%);
             animation: spin 1s linear infinite;
-            position:relative;
+            position: relative;
         }
-        .gradient-spinner::before{
-            content:"";
-            position:absolute;
-            inset:4px;
-            border-radius:50%;
+
+        .gradient-spinner::before {
+            content: "";
+            position: absolute;
+            inset: 4px;
+            border-radius: 50%;
             background: var(--bg-base);
         }
-        @keyframes spin{
-            to{transform:rotate(360deg);}
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
-        .loading-step-text{
-            color:var(--text-secondary);
-            font-family:Consolas,monospace;
+
+        .loading-step-text {
+            color: var(--text-secondary);
+            font-family: Consolas, monospace;
         }
 
         .markdown-wrap {
-            padding:2.4rem;
+            padding: 2.4rem;
         }
+
         .markdown-body {
-            color:var(--text-secondary);
+            color: var(--text-secondary);
         }
-        .markdown-body h1,h2,h3,h4 {
-            color:var(--text-primary);
-            margin:1.4rem 0 0.7rem;
+
+        .markdown-body h1,
+        h2,
+        h3,
+        h4 {
+            color: var(--text-primary);
+            margin: 1.4rem 0 0.7rem;
         }
+
         .markdown-body p {
-            margin-bottom:1rem;
+            margin-bottom: 1rem;
         }
+
         .markdown-body pre {
-            padding:1rem;
-            border-radius:10px;
-            overflow-x:auto;
-            background:rgba(0,0,0,0.08);
+            padding: 1rem;
+            border-radius: 10px;
+            overflow-x: auto;
+            background: rgba(0, 0, 0, 0.08);
         }
+
         [data-theme="dark"] .markdown-body pre {
-            background:rgba(0,0,0,0.3);
+            background: rgba(0, 0, 0, 0.3);
         }
+
         .markdown-body code {
-            padding:0.15rem 0.4rem;
-            border-radius:4px;
-            background:rgba(0,0,0,0.08);
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.08);
         }
+
         [data-theme="dark"] .markdown-body code {
-            background:rgba(0,0,0,0.3);
+            background: rgba(0, 0, 0, 0.3);
         }
 
         footer {
@@ -408,354 +494,432 @@
             z-index: 1;
         }
 
-        @media (max-width:768px){
+        @media (max-width:768px) {
             .ascii-art-block pre {
                 font-size: 0.54rem;
             }
-            .hero-page h1 {font-size:2rem;}
-            .nav-wrap {gap:0.4rem;}
-            .time-widget {font-size:0.72rem;}
-            .nav-item {padding:0.6rem 0.8rem;font-size:0.85rem;}
-            .markdown-wrap {padding:1.4rem;}
+
+            .hero-page h1 {
+                font-size: 2rem;
+            }
+
+            .nav-wrap {
+                gap: 0.4rem;
+            }
+
+            .time-widget {
+                font-size: 0.7rem;
+            }
+
+            .nav-item {
+                padding: 0.5rem 0.65rem;
+                font-size: 0.82rem;
+            }
+
+            .theme-btn {
+                width: 34px;
+                height: 34px;
+                font-size: 0.9rem;
+            }
+
+            .markdown-wrap {
+                padding: 1.4rem;
+            }
         }
     </style>
 </head>
+
 <body>
-<div id="app">
-    <div class="reading-progress" :style="{width: scrollPercent + '%'}"></div>
-    <div class="mouse-light" :style="lightStyle"></div>
-    <div class="bg-mountains" :style="backgroundStyle"></div>
+    <div id="app">
+        <div class="top-loading-bar" :class="{'active':isPageLoading}" :style="{width:loadingBarWidth+'%'}"></div>
+        <div class="reading-progress" :style="{width: scrollPercent + '%'}"></div>
+        <div class="mouse-light" :style="lightStyle"></div>
+        <div class="bg-mountains" :style="backgroundStyle"></div>
 
-    <div class="nav-toolbar" :class="{'hide-bar': hideNavbar}">
-        <div class="glass">
-            <div class="vibrancy-effect"></div>
-            <div class="nav-wrap">
-                <div class="time-widget">🕒 {{beijingTime}}</div>
-                <nav class="nav-items">
-                    <a href="index.html" class="nav-item">首页</a>
-                    <a href="one-editor.html" class="nav-item active">One Editor</a>
-                    <a href="download.html" class="nav-item">下载</a>
-                </nav>
-                <button class="theme-btn" @click="toggleTheme" title="切换深浅色">
-                    <span>{{ isDark ? '☀️' : '🌙' }}</span>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <main>
-        <section class="hero-page">
-            <div class="glass ascii-art-block">
+        <div class="nav-toolbar" :class="{'shrink-mode': shrinkNavbar}" @click="toggleShrinkNavbar">
+            <div class="glass">
                 <div class="vibrancy-effect"></div>
-<pre>  ___                  _____    _ _ _            
- / _ \ _ __   ___     | ____|__| (_) |_ ___  _ __ 
-| | | | '_ \ / _ \    |  _| / _` | | __/ _ \| '__|
-| |_| | | | |  __/    | |__| (_| | | || (_) | |   
- \___/|_| |_|\___|    |_____\__,_|_|\__\___/|_|   
+                <div class="nav-wrap">
+                    <div class="time-widget">🕒 {{beijingTime}}</div>
+                    <nav class="nav-items">
+                        <a href="index.html" class="nav-item">首页</a>
+                        <a href="one-editor.html" class="nav-item active">One Editor</a>
+                        <a href="download.html" class="nav-item">下载</a>
+                    </nav>
+                    <div class="theme-group">
+                        <button class="theme-btn" :class="{'active':themeMode==='dark'}" @click="setTheme('dark')"
+                            title="深色">🌙</button>
+                        <button class="theme-btn" :class="{'active':themeMode==='light'}" @click="setTheme('light')"
+                            title="浅色">☀️</button>
+                        <button class="theme-btn" :class="{'active':themeMode==='auto'}" @click="setTheme('auto')"
+                            title="跟随系统">🔄</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <main class="page-fade" :class="{'in':pageMounted}">
+            <section class="hero-page">
+                <div class="glass ascii-art-block">
+                    <div class="vibrancy-effect"></div>
+                    <pre> ___ _____ _ _ _
+ / _ \ _ __ ___ | ____|__| (_) |_ ___ _ __
+| | | | '_ \ / _ \ | _| / _` | | __/ _ \| '__|
+| |_| | | | | __/ | |__| (_| | | || (_) | |
+ \___/|_| |_|\___| |_____\__,_|_|\__\___/|_|
 </pre>
+                </div>
+                <h1>One-Editor</h1>
+                <p>基于 Textual 构建的现代化终端代码编辑器，轻量、高速、高度可定制的终端IDE。</p>
+                <div class="btn-group">
+                    <a href="https://github.com/Aoan2011/ONE-Editor" target="_blank" class="btn-primary">GitHub仓库</a>
+                    <a href="download.html" class="btn-ghost">下载使用</a>
+                </div>
+            </section>
+
+            <div class="glass source-status">
+                <div class="vibrancy-effect"></div>
+                <div class="status-line">
+                    <span class="status-dot" :class="statusDotClass"></span>
+                    <select class="source-select" v-model="userMode" @change="onModeChange">
+                        <option value="auto">Auto（自动降级）</option>
+                        <option value="github">GitHub远程</option>
+                        <option value="cache">浏览器缓存</option>
+                        <option value="local">本地静态文件</option>
+                    </select>
+                    <span>{{sourceText}}</span>
+                </div>
             </div>
-            <h1>One‑Editor</h1>
-            <p>基于 Textual 构建的现代化终端代码编辑器，轻量、高速、高度可定制的终端IDE。</p>
-            <div class="btn-group">
-                <a href="https://github.com/Aoan2011/ONE‑Editor" target="_blank" class="btn-primary">GitHub仓库</a>
-                <a href="download.html" class="btn-ghost">下载使用</a>
+
+            <div class="glass">
+                <div class="vibrancy-effect"></div>
+                <div v-if="isLoading" class="loader-wrap">
+                    <div class="gradient-spinner"></div>
+                    <div class="loading-step-text">{{loadingStep}}</div>
+                </div>
+                <div v-else class="markdown-wrap markdown-body" v-html="renderedMarkdown"></div>
             </div>
-        </section>
+        </main>
 
-        <!-- 降级状态提示 + 选择器 -->
-        <div class="glass source-status">
-            <div class="vibrancy-effect"></div>
-            <div class="status-line">
-                <span class="status-dot" :class="statusDotClass"></span>
-                <select class="source-select" v-model="userMode" @change="onModeChange">
-                    <option value="auto">Auto（自动降级）</option>
-                    <option value="github">GitHub远程</option>
-                    <option value="cache">浏览器缓存</option>
-                    <option value="local">本地静态文件</option>
-                </select>
-                <span>{{sourceText}}</span>
-            </div>
-        </div>
+        <footer>
+            <p>&copy; 2026 Aoan2011. Built with passion for developers.</p>
+        </footer>
+    </div>
+    <script>
+        const { createApp, ref, computed, onMounted, onUnmounted, nextTick } = Vue;
+        createApp({
+            setup() {
+                const themeMode = ref('dark'); // dark / light / auto 默认深色
+                const THEME_KEY = 'site_theme_preference';
+                const CACHE_KEY = 'one_editor_readme_cache';
+                const MODE_STORAGE_KEY = "one_editor_source_mode";
 
-        <div class="glass">
-            <div class="vibrancy-effect"></div>
-            <div v-if="isLoading" class="loader-wrap">
-                <div class="gradient-spinner"></div>
-                <div class="loading-step-text">{{loadingStep}}</div>
-            </div>
-            <div v-else class="markdown-wrap markdown-body" v-html="renderedMarkdown"></div>
-        </div>
-    </main>
+                // 页面加载动画
+                const isPageLoading = ref(false);
+                const loadingBarWidth = ref(0);
+                const pageMounted = ref(false);
 
-    <footer>
-        <p>&copy; 2026 Aoan2011. Built with passion for developers.</p>
-    </footer>
-</div>
-
-<script>
-const { createApp, ref, computed, onMounted, onUnmounted } = Vue;
-
-createApp({
-    setup(){
-        const isDark = ref(false);
-        const THEME_KEY = 'site_theme_preference';
-        const CACHE_KEY = 'one_editor_readme_cache';
-        const MODE_STORAGE_KEY = "one_editor_source_mode";
-
-        // 用户选择模式 auto / github / cache / local
-        const userMode = ref("auto");
-        //实际数据源：1=github 2=cache 3=local
-        const sourceLevel = ref(0);
-        const isLoading = ref(false);
-        const loadingStep = ref("");
-
-        const mountainImages = [
-            './assets/mountain/m1.jpg',
-            './assets/mountain/m2.jpg',
-            './assets/mountain/m3.jpg',
-            './assets/mountain/m4.jpg',
-            './assets/mountain/m5.jpg',
-            './assets/mountain/m6.jpg',
-            './assets/mountain/m7.jpg',
-            './assets/mountain/m8.jpg',
-            './assets/mountain/m9.jpg',
-        ];
-        const randomMountain = mountainImages[Math.floor(Math.random()*mountainImages.length)];
-        const backgroundStyle = computed(()=>({backgroundImage:`url('${randomMountain}')`}));
-
-        // 鼠标点光源
-        const mouseX = ref(0);
-        const mouseY = ref(0);
-        const lightStyle = computed(()=>({'--mx':`${mouseX.value}px`,'--my':`${mouseY.value}px`}));
-        function onMouseMove(e){
-            mouseX.value = e.clientX;
-            mouseY.value = e.clientY;
-        }
-
-        // 阅读进度
-        const scrollPercent = ref(0);
-        function updateScrollProgress(){
-            const st = window.scrollY;
-            const dh = document.documentElement.scrollHeight - window.innerHeight;
-            scrollPercent.value = dh>0 ? (st/dh)*100 :0;
-        }
-
-        // 底部栏自动隐藏
-        const hideNavbar = ref(false);
-        let lastScrollY =0;
-        const SCROLL_THRESHOLD =80;
-        function handleScrollHideNav(){
-            const curr = window.scrollY;
-            updateScrollProgress();
-            if(curr <10){
-                hideNavbar.value = false;
-            }else if(curr>lastScrollY && curr>SCROLL_THRESHOLD){
-                hideNavbar.value = true;
-            }else{
-                hideNavbar.value = false;
-            }
-            lastScrollY = curr;
-        }
-
-        // 北京时间
-        const beijingTime = ref('');
-        function updateBeijingTime(){
-            const d = new Date();
-            beijingTime.value = d.toLocaleString("zh-CN", {timeZone:"Asia/Shanghai"});
-        }
-
-        // ========== 文档加载逻辑（4模式） ==========
-        const renderedMarkdown = ref("");
-        const sourceText = computed(()=>{
-            if(sourceLevel.value ===1) return "🟢 实际数据源：GitHub远程README";
-            if(sourceLevel.value ===2) return "🟡 实际数据源：浏览器本地缓存";
-            if(sourceLevel.value ===3) return "🔴 实际数据源：本地静态readme.md";
-            return "🔄 等待加载";
-        });
-        const statusDotClass = computed(()=>{
-            if(isLoading.value) return "dot-loading";
-            if(sourceLevel.value===1) return "dot-github";
-            if(sourceLevel.value===2) return "dot-cache";
-            return "dot-local";
-        });
-
-        const RAW_GITHUB_README = "https://raw.githubusercontent.com/Aoan2011/ONE-Editor/main/README.md";
-        const LOCAL_README_PATH = "./one-editor-readme.md";
-        const isFileProtocol = window.location.protocol === "file:";
-
-        async function loadReadme(){
-            isLoading.value = true;
-            loadingStep.value = "";
-            renderedMarkdown.value = "";
-            sourceLevel.value =0;
-            let mdText = "";
-
-            const mode = userMode.value;
-
-            if(mode === "github"){
-                loadingStep.value = "正在请求 GitHub 远程 README...";
-                try{
-                    const resp = await fetch(RAW_GITHUB_README, {cache:"no-cache"});
-                    if(!resp.ok) throw new Error(`HTTP ${resp.status}`);
-                    mdText = await resp.text();
-                    if(!mdText) throw new Error("返回内容为空");
-                    sourceLevel.value =1;
-                    localStorage.setItem(CACHE_KEY, mdText);
-                    renderedMarkdown.value = marked.parse(mdText);
-                }catch(err){
-                    renderedMarkdown.value = `<p style="color:#ef4444">❌ GitHub远程读取失败：${err.message}</p>`;
+                // 底部导航收缩
+                const shrinkNavbar = ref(false);
+                function toggleShrinkNavbar() {
+                    shrinkNavbar.value = !shrinkNavbar.value;
                 }
-                isLoading.value = false;
-                return;
-            }
 
-            if(mode === "cache"){
-                loadingStep.value = "读取浏览器缓存...";
-                const cached = localStorage.getItem(CACHE_KEY);
-                if(cached){
-                    mdText = cached;
-                    sourceLevel.value =2;
-                    renderedMarkdown.value = marked.parse(mdText);
-                }else{
-                    renderedMarkdown.value = `<p style="color:#ef4444">❌ 浏览器缓存不存在，请先使用Auto/GitHub加载一次文档</p>`;
+                // 主题系统
+                function applyTheme(mode) {
+                    themeMode.value = mode;
+                    let effective;
+                    if (mode === 'auto') {
+                        effective = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                    } else {
+                        effective = mode;
+                    }
+                    document.documentElement.setAttribute('data-theme', effective);
+                    localStorage.setItem(THEME_KEY, mode);
                 }
-                isLoading.value = false;
-                return;
-            }
+                function setTheme(mode) {
+                    applyTheme(mode);
+                }
+                function initTheme() {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved) {
+                        applyTheme(saved);
+                    } else {
+                        applyTheme('dark');
+                    }
+                }
 
-            if(mode === "local"){
-                if(isFileProtocol){
-                    renderedMarkdown.value = `<p style="color:#ef4444">❌ file:// 协议禁止读取本地文件！请使用 HTTP 服务器（Live Server / python -m http.server）打开页面。文件已存在也会报NetworkError。</p>`;
-                    isLoading.value = false;
-                    return;
-                }
-                loadingStep.value = "读取本地静态 one‑editor‑readme.md ...";
-                try{
-                    const localResp = await fetch(LOCAL_README_PATH);
-                    if(!localResp.ok) throw new Error(`status ${localResp.status}`);
-                    mdText = await localResp.text();
-                    if(!mdText) throw new Error("文件内容为空");
-                    sourceLevel.value =3;
-                    renderedMarkdown.value = marked.parse(mdText);
-                }catch(e){
-                    renderedMarkdown.value = `<p style="color:#ef4444">❌ 本地readme.md加载失败：${e.message}<br>确认根目录存在 one‑editor‑readme.md，并且使用HTTP服务访问，不要双击html打开。</p>`;
-                }
-                isLoading.value = false;
-                return;
-            }
+                // 用户选择模式 auto / github / cache / local
+                const userMode = ref("auto");
+                //实际数据源：1=github 2=cache 3=local
+                const sourceLevel = ref(0);
+                const isLoading = ref(false);
+                const loadingStep = ref("");
 
-            // ========== Auto自动降级模式（分步提示） ==========
-            loadingStep.value = "[1/3] 尝试 GitHub 远程源...";
-            try{
-                const resp = await fetch(RAW_GITHUB_README, {cache:"no-cache"});
-                if(resp.ok){
-                    mdText = await resp.text();
-                    if(mdText){
-                        sourceLevel.value =1;
-                        localStorage.setItem(CACHE_KEY, mdText);
-                        renderedMarkdown.value = marked.parse(mdText);
-                        isLoading.value = false;
+                const mountainImages = [
+                    './assets/mountain/m1.jpg',
+                    './assets/mountain/m2.jpg',
+                    './assets/mountain/m3.jpg',
+                    './assets/mountain/m4.jpg',
+                    './assets/mountain/m5.jpg',
+                    './assets/mountain/m6.jpg',
+                    './assets/mountain/m7.jpg',
+                    './assets/mountain/m8.jpg',
+                    './assets/mountain/m9.jpg',
+                ];
+                const randomMountain = mountainImages[Math.floor(Math.random() * mountainImages.length)];
+                const backgroundStyle = computed(() => ({ backgroundImage: `url('${randomMountain}')` }));
+
+                // 鼠标点光源
+                const mouseX = ref(0);
+                const mouseY = ref(0);
+                const lightStyle = computed(() => ({ '--mx': `${mouseX.value}px`, '--my': `${mouseY.value}px` }));
+                function onMouseMove(e) {
+                    mouseX.value = e.clientX;
+                    mouseY.value = e.clientY;
+                }
+
+                // 阅读进度
+                const scrollPercent = ref(0);
+                function updateScrollProgress() {
+                    const st = window.scrollY;
+                    const dh = document.documentElement.scrollHeight - window.innerHeight;
+                    scrollPercent.value = dh > 0 ? (st / dh) * 100 : 0;
+                }
+
+                // 底部栏滚动自动收起
+                let lastScrollY = 0;
+                const SCROLL_THRESHOLD = 80;
+                function handleScrollHideNav() {
+                    const curr = window.scrollY;
+                    updateScrollProgress();
+                    if (curr < 10) {
+                        shrinkNavbar.value = false;
+                    } else if (curr > lastScrollY && curr > SCROLL_THRESHOLD) {
+                        shrinkNavbar.value = true;
+                    } else {
+                        shrinkNavbar.value = false;
+                    }
+                    lastScrollY = curr;
+                }
+
+                // 北京时间
+                const beijingTime = ref('');
+                function updateBeijingTime() {
+                    const d = new Date();
+                    beijingTime.value = d.toLocaleString("zh-CN", { timeZone: "Asia/Shanghai" });
+                }
+
+                //顶部加载条
+                async function triggerLoadingBar() {
+                    isPageLoading.value = true;
+                    loadingBarWidth.value = 30;
+                    await nextTick();
+                    loadingBarWidth.value = 85;
+                }
+                async function finishLoadingBar() {
+                    loadingBarWidth.value = 100;
+                    await nextTick();
+                    setTimeout(() => {
+                        isPageLoading.value = false;
+                        loadingBarWidth.value = 0;
+                    }, 220);
+                }
+
+                // ========== 文档加载逻辑（4模式） ==========
+                const renderedMarkdown = ref("");
+                const sourceText = computed(() => {
+                    if (sourceLevel.value === 1) return "🟢 实际数据源：GitHub远程README";
+                    if (sourceLevel.value === 2) return "🟡 实际数据源：浏览器本地缓存";
+                    if (sourceLevel.value === 3) return "🔴 实际数据源：本地静态readme.md";
+                    return "🔄 等待加载";
+                });
+                const statusDotClass = computed(() => {
+                    if (isLoading.value) return "dot-loading";
+                    if (sourceLevel.value === 1) return "dot-github";
+                    if (sourceLevel.value === 2) return "dot-cache";
+                    return "dot-local";
+                });
+                const RAW_GITHUB_README = "https://raw.githubusercontent.com/Aoan2011/ONE-Editor/main/README.md";
+                const LOCAL_README_PATH = "./one-editor-readme.md";
+                const isFileProtocol = window.location.protocol === "file:";
+
+                async function loadReadme() {
+                    isLoading.value = true;
+                    loadingStep.value = "";
+                    renderedMarkdown.value = "";
+                    sourceLevel.value = 0;
+                    let mdText = "";
+                    const mode = userMode.value;
+                    if (mode === "github") {
+                        loadingStep.value = "正在请求 GitHub 远程 README...";
+                        try {
+                            await triggerLoadingBar();
+                            const resp = await fetch(RAW_GITHUB_README, { cache: "no-cache" });
+                            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                            mdText = await resp.text();
+                            if (!mdText) throw new Error("返回内容为空");
+                            sourceLevel.value = 1;
+                            localStorage.setItem(CACHE_KEY, mdText);
+                            renderedMarkdown.value = marked.parse(mdText);
+                        } catch (err) {
+                            renderedMarkdown.value = `<p style="color:#ef4444">❌ GitHub远程读取失败：${err.message}</p>`;
+                        } finally {
+                            isLoading.value = false;
+                            await finishLoadingBar();
+                        }
                         return;
                     }
-                }
-            }catch(err){
-                console.warn("GitHub远程读取失败，降级到缓存",err);
-            }
-
-            loadingStep.value = "[2/3] GitHub失败，尝试浏览器缓存...";
-            const cached = localStorage.getItem(CACHE_KEY);
-            if(cached){
-                mdText = cached;
-                sourceLevel.value =2;
-                renderedMarkdown.value = marked.parse(mdText);
-                isLoading.value = false;
-                return;
-            }
-
-            loadingStep.value = "[3/3] 缓存为空，尝试本地静态文件...";
-            if(isFileProtocol){
-                renderedMarkdown.value = `<p style="color:#ef4444">⚠️ Auto模式全部降级失败：file://协议无法加载本地md。请启动HTTP服务，或者切换GitHub/Cache模式。</p>`;
-                isLoading.value = false;
-                return;
-            }
-            try{
-                const localResp = await fetch(LOCAL_README_PATH);
-                if(localResp.ok){
-                    mdText = await localResp.text();
-                    if(mdText){
-                        sourceLevel.value =3;
-                        renderedMarkdown.value = marked.parse(mdText);
-                    }else{
-                        renderedMarkdown.value = "<p>⚠️ 本地readme.md文件内容为空</p>";
+                    if (mode === "cache") {
+                        loadingStep.value = "读取浏览器缓存...";
+                        await triggerLoadingBar();
+                        const cached = localStorage.getItem(CACHE_KEY);
+                        if (cached) {
+                            mdText = cached;
+                            sourceLevel.value = 2;
+                            renderedMarkdown.value = marked.parse(mdText);
+                        } else {
+                            renderedMarkdown.value = `<p style="color:#ef4444">❌ 浏览器缓存不存在，请先使用Auto/GitHub加载一次文档</p>`;
+                        }
+                        isLoading.value = false;
+                        await finishLoadingBar();
+                        return;
                     }
-                }else{
-                    renderedMarkdown.value = "<p>⚠️ 全部数据源加载失败，请检查网络或本地 one‑editor‑readme.md 文件</p>";
+                    if (mode === "local") {
+                        if (isFileProtocol) {
+                            renderedMarkdown.value = `<p style="color:#ef4444">❌ file:// 协议禁止读取本地文件！请使用 HTTP 服务器（Live Server / python -m http.server）打开页面。文件已存在也会报NetworkError。</p>`;
+                            isLoading.value = false;
+                            return;
+                        }
+                        loadingStep.value = "读取本地静态 one-editor-readme.md ...";
+                        await triggerLoadingBar();
+                        try {
+                            const localResp = await fetch(LOCAL_README_PATH);
+                            if (!localResp.ok) throw new Error(`status ${localResp.status}`);
+                            mdText = await localResp.text();
+                            if (!mdText) throw new Error("文件内容为空");
+                            sourceLevel.value = 3;
+                            renderedMarkdown.value = marked.parse(mdText);
+                        } catch (e) {
+                            renderedMarkdown.value = `<p style="color:#ef4444">❌ 本地readme.md加载失败：${e.message}<br>确认根目录存在 one-editor-readme.md，并且使用HTTP服务访问，不要双击html打开。</p>`;
+                        } finally {
+                            isLoading.value = false;
+                            await finishLoadingBar();
+                        }
+                        return;
+                    }
+                    // ========== Auto自动降级模式（分步提示） ==========
+                    loadingStep.value = "[1/3] 尝试 GitHub 远程源...";
+                    await triggerLoadingBar();
+                    try {
+                        const resp = await fetch(RAW_GITHUB_README, { cache: "no-cache" });
+                        if (resp.ok) {
+                            mdText = await resp.text();
+                            if (mdText) {
+                                sourceLevel.value = 1;
+                                localStorage.setItem(CACHE_KEY, mdText);
+                                renderedMarkdown.value = marked.parse(mdText);
+                                isLoading.value = false;
+                                await finishLoadingBar();
+                                return;
+                            }
+                        }
+                    } catch (err) {
+                        console.warn("GitHub远程读取失败，降级到缓存", err);
+                    }
+                    loadingStep.value = "[2/3] GitHub失败，尝试浏览器缓存...";
+                    const cached = localStorage.getItem(CACHE_KEY);
+                    if (cached) {
+                        mdText = cached;
+                        sourceLevel.value = 2;
+                        renderedMarkdown.value = marked.parse(mdText);
+                        isLoading.value = false;
+                        await finishLoadingBar();
+                        return;
+                    }
+                    loadingStep.value = "[3/3] 缓存为空，尝试本地静态文件...";
+                    if (isFileProtocol) {
+                        renderedMarkdown.value = `<p style="color:#ef4444">⚠️ Auto模式全部降级失败：file://协议无法加载本地md。请启动HTTP服务，或者切换GitHub/Cache模式。</p>`;
+                        isLoading.value = false;
+                        await finishLoadingBar();
+                        return;
+                    }
+                    try {
+                        const localResp = await fetch(LOCAL_README_PATH);
+                        if (localResp.ok) {
+                            mdText = await localResp.text();
+                            if (mdText) {
+                                sourceLevel.value = 3;
+                                renderedMarkdown.value = marked.parse(mdText);
+                            } else {
+                                renderedMarkdown.value = "<p>⚠️ 本地readme.md文件内容为空</p>";
+                            }
+                        } else {
+                            renderedMarkdown.value = "<p>⚠️ 全部数据源加载失败，请检查网络或本地 one-editor-readme.md 文件</p>";
+                        }
+                    } catch (e) {
+                        renderedMarkdown.value = "<p>⚠️ 全部数据源加载失败，请检查网络或本地 one-editor-readme.md 文件</p>";
+                    }
+                    isLoading.value = false;
+                    await finishLoadingBar();
                 }
-            }catch(e){
-                renderedMarkdown.value = "<p>⚠️ 全部数据源加载失败，请检查网络或本地 one‑editor‑readme.md 文件</p>";
-            }
-            isLoading.value = false;
-        }
 
-        function onModeChange(){
-            localStorage.setItem(MODE_STORAGE_KEY, userMode.value);
-            loadReadme();
-        }
-
-        //主题
-        const initTheme = ()=>{
-            const saved = localStorage.getItem(THEME_KEY);
-            if(saved){
-                isDark.value = saved ==='dark';
-            }else{
-                isDark.value = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            }
-            document.documentElement.setAttribute('data-theme', isDark.value?'dark':'light');
-        };
-        const toggleTheme = ()=>{
-            isDark.value = !isDark.value;
-            document.documentElement.setAttribute('data-theme', isDark.value?'dark':'light');
-            localStorage.setItem(THEME_KEY, isDark.value?'dark':'light');
-        };
-
-        let timeTimer=null;
-        onMounted(()=>{
-            //读取上次用户选择的模式
-            const savedMode = localStorage.getItem(MODE_STORAGE_KEY);
-            if(["auto","github","cache","local"].includes(savedMode)){
-                userMode.value = savedMode;
-            }
-
-            initTheme();
-            loadReadme();
-            window.addEventListener('mousemove', onMouseMove);
-            window.addEventListener('scroll', handleScrollHideNav);
-            updateBeijingTime();
-            timeTimer = setInterval(updateBeijingTime, 1000);
-
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',e=>{
-                if(!localStorage.getItem(THEME_KEY)){
-                    isDark.value = e.matches;
-                    document.documentElement.setAttribute('data-theme', isDark.value?'dark':'light');
+                function onModeChange() {
+                    localStorage.setItem(MODE_STORAGE_KEY, userMode.value);
+                    loadReadme();
                 }
-            });
-        });
 
-        onUnmounted(()=>{
-            window.removeEventListener('mousemove', onMouseMove);
-            window.removeEventListener('scroll', handleScrollHideNav);
-            clearInterval(timeTimer);
-        });
+                let timeTimer = null;
+                onMounted(async () => {
+                    //读取上次用户选择的模式
+                    const savedMode = localStorage.getItem(MODE_STORAGE_KEY);
+                    if (["auto", "github", "cache", "local"].includes(savedMode)) {
+                        userMode.value = savedMode;
+                    }
+                    initTheme();
+                    await loadReadme();
+                    window.addEventListener('mousemove', onMouseMove);
+                    window.addEventListener('scroll', handleScrollHideNav);
+                    updateBeijingTime();
+                    timeTimer = setInterval(updateBeijingTime, 1000);
+                    nextTick(() => {
+                        pageMounted.value = true;
+                    });
+                    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+                        if (themeMode.value === 'auto') {
+                            applyTheme('auto');
+                        }
+                    });
+                });
+                onUnmounted(() => {
+                    window.removeEventListener('mousemove', onMouseMove);
+                    window.removeEventListener('scroll', handleScrollHideNav);
+                    clearInterval(timeTimer);
+                });
 
-        return {
-            isDark, toggleTheme, backgroundStyle, lightStyle,
-            scrollPercent, hideNavbar, beijingTime,
-            renderedMarkdown, sourceText, statusDotClass,
-            userMode, onModeChange,
-            isLoading, loadingStep
-        };
-    }
-}).mount('#app');
-</script>
+                return {
+                    themeMode,
+                    setTheme,
+                    shrinkNavbar,
+                    toggleShrinkNavbar,
+                    backgroundStyle,
+                    lightStyle,
+                    scrollPercent,
+                    beijingTime,
+                    renderedMarkdown,
+                    sourceText,
+                    statusDotClass,
+                    userMode,
+                    onModeChange,
+                    isLoading,
+                    loadingStep,
+                    isPageLoading,
+                    loadingBarWidth,
+                    pageMounted
+                };
+            }
+        }).mount('#app');
+    </script>
 </body>
+
 </html>
