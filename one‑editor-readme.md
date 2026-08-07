@@ -19,8 +19,8 @@
 ![GitHub Repo stars](https://img.shields.io/github/stars/Aoan2011/One-Editor)
 ![GitHub Tag](https://img.shields.io/github/v/tag/Aoan2011/One-Editor)
 
-> # 因author业务调整、高中学业繁忙，自2026年08月07日暂停维护此项目，随缘更新，谢谢🙏
-
+> # 因author业务调整、高中学业繁忙，自2026年08月07日暂停维护**One Editor**，随缘更新，谢谢各位的关注🙏
+---
 **One Editor** 是一款由准高中生基于 [Textual](https://textual.textualize.io) 构建的现代化终端代码编辑器，提供接近 VSCode 的编辑体验，同时保持轻量、快速和高度可定制。
 
 > **您好！该项目仍处于测试阶段，不正当的使用可能会产生意想不到的后果**
