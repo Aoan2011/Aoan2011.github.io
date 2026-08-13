@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,7 +14,6 @@
             padding: 0;
             box-sizing: border-box;
         }
-
         :root {
             --bg-base: #f5f7fa;
             --text-primary: #1e293b;
@@ -32,9 +30,552 @@
             --glass-inset-dark: rgba(0, 0, 0, 0.04);
             --glass-blur: 2px;
         }
-
         [data-theme="dark"] {
             --bg-base: #05070d;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent: #34d399;
+            --accent-soft: rgba(52, 211, 153, 0.14);
+            --gradient-main: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+            --glass-bg: rgba(22, 26, 38, 0.20);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --glass-shadow: 0px 6px 30px 0px rgba(0, 0, 0, 0.45);
+            --glass-inset-light: rgba(255, 255, 255, 0.08);
+            --glass-inset-dark: rgba(0, 0, 0, 0.18);
+            --glass-blur: 2px;
+        }
+        html,
+        body {
+            height: 100%;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', Roboto, sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            line-height: 1.7;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            padding-bottom: 140px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        /* 顶部红色加载条 */
+        .top-loading-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 5px;
+            background-color: var(--loading-bar-color);
+            z-index: 9999;
+            width: 0%;
+            transform: translateY(-100%);
+            transition: transform 0.22s ease, width 0.35s ease;
+        }
+        .top-loading-bar.active {
+            transform: translateY(0);
+        }
+        /* 页面入场动画 */
+        .page-fade {
+            opacity: 0;
+            transform: translateY(14px);
+            transition: opacity 0.45s ease, transform 0.45s ease;
+        }
+        .page-fade.in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .reading-progress {
+            position: fixed;
+            top: 6px;
+            left: 0;
+            height: 3px;
+            background: var(--gradient-main);
+            width: 0%;
+            z-index: 9998;
+        }
+        .bg-mountains {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .bg-mountains::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom,
+                    rgba(245, 247, 250, 0.82) 0%,
+                    rgba(245, 247, 250, 0.64) 45%,
+                    rgba(245, 247, 250, 0.88) 100%);
+            transition: background 0.3s ease;
+        }
+        [data-theme="dark"] .bg-mountains::after {
+            background: linear-gradient(to bottom,
+                    rgba(5, 7, 13, 0.88) 0%,
+                    rgba(5, 7, 13, 0.72) 45%,
+                    rgba(5, 7, 13, 0.92) 100%);
+        }
+        .mouse-light {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+        body:hover .mouse-light {
+            opacity: 1;
+        }
+        .mouse-light::before {
+            content: '';
+            position: absolute;
+            left: var(--mx);
+            top: var(--my);
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.18) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+        }
+        [data-theme="dark"] .mouse-light::before {
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%);
+        }
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur)) saturate(150%) contrast(100%) brightness(120%);
+            -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%) contrast(100%) brightness(120%);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            box-shadow: var(--glass-shadow),
+                inset 0 1px 0 0 var(--glass-inset-light),
+                inset 0 -1px 0 0 var(--glass-inset-dark);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: scale(1);
+            isolation: isolate;
+        }
+        .glass:hover {
+            transform: scale(1.015);
+        }
+        .glass>.vibrancy-effect {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+            mix-blend-mode: overlay;
+            pointer-events: none;
+            border-radius: inherit;
+        }
+        /* ========== 底部导航栏：低矮长条模式（与download完全一致） ========== */
+        .nav-toolbar {
+            position: fixed;
+            bottom: 1.6rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(0);
+            z-index: 1000;
+            transition: transform 0.34s cubic-bezier(0.2, 0, 0.2, 1);
+            cursor: pointer;
+            width: 92%;
+            max-width: 760px;
+        }
+        .nav-toolbar.shrink-mode {
+            transform: translateX(-50%) translateY(64px) scale(0.92);
+        }
+        .nav-toolbar .glass {
+            padding: 14px 18px;
+            border-radius: 999px;
+        }
+        .nav-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            position: relative;
+            z-index: 2;
+            flex-wrap: nowrap;
+            min-width: 0;
+        }
+        .time-widget {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            padding: 0 0.4rem;
+            flex-shrink: 0;
+        }
+        .nav-items {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            flex-wrap: nowrap;
+        }
+        .nav-item {
+            padding: 10px 14px;
+            border-radius: 999px;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.25s ease;
+            white-space: nowrap;
+        }
+        .nav-item:hover {
+            color: var(--accent);
+            background: var(--accent-soft);
+        }
+        .nav-item.active {
+            color: var(--accent);
+            background: var(--accent-soft);
+        }
+        .theme-group {
+            display: flex;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+        .theme-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            transition: background 0.2s;
+        }
+        .theme-btn:hover {
+            background: var(--accent-soft);
+        }
+        .theme-btn.active {
+            background: var(--accent-soft);
+            color: var(--accent);
+        }
+        main {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 5rem 2rem 3rem;
+            position: relative;
+            z-index: 1;
+        }
+        .hero-page {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .ascii-art-block {
+            display: inline-block;
+            padding: 1rem 1.4rem;
+            margin-bottom: 1.2rem;
+        }
+        .ascii-art-block pre {
+            font-family: "Consolas", "Monaco", "JetBrains Mono", monospace;
+            font-size: 0.72rem;
+            line-height: 1.25;
+            white-space: pre;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        .hero-page h1 {
+            font-size: 2.6rem;
+            margin-bottom: 0.8rem;
+            background: var(--gradient-main);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-page p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto 1.4rem;
+        }
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn-primary {
+            padding: 0.75rem 1.8rem;
+            background: var(--gradient-main);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+        .btn-ghost {
+            padding: 0.75rem 1.8rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            border-radius: 12px;
+        }
+        /* 降级状态提示 */
+        .source-status {
+            margin-bottom: 1.6rem;
+            padding: 0.9rem 1.4rem;
+        }
+        .status-line {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            flex-wrap: wrap;
+        }
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .dot-github {
+            background: #22c55e;
+        }
+        .dot-cache {
+            background: #eab308;
+        }
+        .dot-cdn {
+            background: #0ea5e9;
+        }
+        .dot-loading {
+            background: #6366f1;
+        }
+        .source-select {
+            padding: 0.35rem 0.6rem;
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            color: var(--text-primary);
+            backdrop-filter: blur(4px);
+            outline: none;
+            cursor: pointer;
+        }
+        .source-select:focus {
+            border-color: var(--accent);
+        }
+        /====高级加载动画====/ .loader-wrap {
+            padding: 4rem 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.2rem;
+        }
+        .gradient-spinner {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: conic-gradient(var(--accent), transparent 30%);
+            animation: spin 1s linear infinite;
+            position: relative;
+        }
+        .gradient-spinner::before {
+            content: "";
+            position: absolute;
+            inset: 4px;
+            border-radius: 50%;
+            background: var(--bg-base);
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .loading-step-text {
+            color: var(--text-secondary);
+            font-family: Consolas, monospace;
+        }
+        .markdown-wrap {
+            padding: 2.4rem;
+        }
+        .markdown-body {
+            color: var(--text-secondary);
+        }
+        .markdown-body h1,
+        h2,
+        h3,
+        h4 {
+            color: var(--text-primary);
+            margin: 1.4rem 0 0.7rem;
+        }
+        .markdown-body p {
+            margin-bottom: 1rem;
+        }
+        .markdown-body pre {
+            padding: 1rem;
+            border-radius: 10px;
+            overflow-x: auto;
+            background: rgba(0, 0, 0, 0.08);
+        }
+        [data-theme="dark"] .markdown-body pre {
+            background: rgba(0, 0, 0, 0.3);
+        }
+        .markdown-body code {
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.08);
+        }
+        [data-theme="dark"] .markdown-body code {
+            background: rgba(0, 0, 0, 0.3);
+        }
+        footer {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            position: relative;
+            z-index: 1;
+        }
+        @media (max-width:768px) {
+            .ascii-art-block pre {
+                font-size: 0.54rem;
+            }
+            .hero-page h1 {
+                font-size: 2rem;
+            }
+            .nav-wrap {
+                gap: 0.4rem;
+            }
+            .time-widget {
+                font-size: 0.7rem;
+            }
+            .nav-item {
+                padding: 0.5rem 0.65rem;
+                font-size: 0.82rem;
+            }
+            .theme-btn {
+                width: 34px;
+                height: 34px;
+                font-size: 0.9rem;
+            }
+            .markdown-wrap {
+                padding: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="top-loading-bar" :class="{'active':isPageLoading}" :style="{width:loadingBarWidth+'%'}"></div>
+        <div class="reading-progress" :style="{width: scrollPercent + '%'}"></div>
+        <div class="mouse-light" :style="lightStyle"></div>
+        <div class="bg-mountains" :style="backgroundStyle"></div>
+        <div class="nav-toolbar" :class="{'shrink-mode': shrinkNavbar}" @click="toggleShrinkNavbar">
+            <div class="glass">
+                <div class="vibrancy-effect"></div>
+                <div class="nav-wrap">
+                    <div class="time-widget">🕒 {{beijingTime}}</div>
+                    <nav class="nav-items">
+                        <a href="index.html" class="nav-item">首页</a>
+                        <a href="one-editor.html" class="nav-item active">One Editor</a>
+                        <a href="download.html" class="nav-item">下载</a>
+                    </nav>
+                    <div class="theme-group">
+                        <button class="theme-btn" :class="{'active':themeMode==='dark'}" @click="setTheme('dark')"
+                            title="深色">🌙</button>
+                        <button class="theme-btn" :class="{'active':themeMode==='light'}" @click="setTheme('light')"
+                            title="浅色">☀️</button>
+                        <button class="theme-btn" :class="{'active':themeMode==='auto'}" @click="setTheme('auto')"
+                            title="跟随系统">🔄</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <main class="page-fade" :class="{'in':pageMounted}">
+            <section class="hero-page">
+                <div class="glass ascii-art-block">
+                    <div class="vibrancy-effect"></div>
+                    <pre> ___ _____ _ _ _
+ / _ \ _ __ ___ | ____|__| (_) |_ ___ _ __
+| | | | '_ \ / _ \ | _| / _` | | __/ _ \| '__|
+| |_| | | | | __/ | |__| (_| | | || (_) | |
+ \___/|_| |_|\___| |_____\__,_|_|\__\___/|_|
+</pre>
+                </div>
+                <h1>One-Editor</h1>
+                <p>基于 Textual 构建的现代化终端代码编辑器，轻量、高速、高度可定制的终端IDE。</p>
+                <div class="btn-group">
+                    <a href="https://github.com/Aoan2011/ONE-Editor" target="_blank" class="btn-primary">GitHub仓库</a>
+                    <a href="download.html" class="btn-ghost">下载使用</a>
+                </div>
+            </section>
+            <div class="glass source-status">
+                <div class="vibrancy-effect"></div>
+                <div class="status-line">
+                    <span class="status-dot" :class="statusDotClass"></span>
+                    <select class="source-select" v-model="userMode" @change="onModeChange">
+                        <option value="auto">Auto（自动降级）</option>
+                        <option value="github">GitHub远程</option>
+                        <option value="cache">浏览器缓存</option>
+                        <option value="jsdelivr">jsDelivr CDN</option>
+                    </select>
+                    <span>{{sourceText}}</span>
+                </div>
+            </div>
+            <div class="glass">
+                <div class="vibrancy-effect"></div>
+                <div v-if="isLoading" class="loader-wrap">
+                    <div class="gradient-spinner"></div>
+                    <div class="loading-step-text">{{loadingStep}}</div>
+                </div>
+                <div v-else class="markdown-wrap markdown-body" v-html="renderedMarkdown"></div>
+            </div>
+        </main>
+        <footer>
+            <p>&copy; 2026 Aoan2011. Built with passion for developers.</p>
+        </footer>
+    </div>
+    <script>
+        const { createApp, ref, computed, onMounted, onUnmounted, nextTick } = Vue;
+        createApp({
+            setup() {
+                const themeMode = ref('dark'); // dark / light / auto 默认深色
+                const THEME_KEY = 'site_theme_preference';
+                const CACHE_KEY = 'one_editor_readme_cache';
+                const MODE_STORAGE_KEY = "one_editor_source_mode";
+                // 页面加载动画
+                const isPageLoading = ref(false);
+                const loadingBarWidth = ref(0);
+                const pageMounted = ref(false);
+                // 底部导航收缩
+                const shrinkNavbar = ref(false);
+                function toggleShrinkNavbar() {
+                    shrinkNavbar.value = !shrinkNavbar.value;
+                }
+                // 主题系统
+                function applyTheme(mode) {
+                    themeMode.value = mode;
+                    let effective;
+                    if (mode === 'auto') {
+                        effective = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                    } else {
+                        effective = mode;
+                    }
+                    document.documentElement.setAttribute('data-theme', effective);
+                    localStorage.setItem(THEME_KEY, mode);
+                }
+                function setTheme(mode) {
+                    applyTheme(mode);
+                }
+                function initTheme() {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved) {
+                        applyTheme(saved);
+                    } else {
+                        applyTheme('dark');
+                    }
+                }
+                // 用户选择模式 auto / github / cache / jsdelivr
+                const userMode = ref("auto");
+                //实际数据源：1=github 2=cache 3=jsdelivr
+                const sourceLevel = ref(0);
+                const isLoading = ref(false);
+                const loadingStep = ref("");
+                const mountainImages = [
+                    './assets/mountain/m1.jpg',
+                      --bg-base: #05070d;
             --text-primary: #f1f5f9;
             --text-secondary: #94a3b8;
             --text-muted: #64748b;
