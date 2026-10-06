@@ -8,10 +8,6 @@
 ## **这是我的个人网站**
 
 # Star History
-## Star History
-
-## Star History
-
 <a href="https://www.star-history.com/?repos=aoan2011%2Faoan2011.github.com&type=date&legend=top-left">
  <picture>
    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=aoan2011/aoan2011.github.com&type=date&theme=dark&legend=top-left" />
