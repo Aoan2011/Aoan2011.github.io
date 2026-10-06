@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aoan2011 | 个人主页</title>
+    <title>404 · 页面走失了 | Aoan2011</title>
     <link rel="icon" href="./assets/icon.jpg" type="image/jpeg">
     <link rel="shortcut icon" href="./assets/icon.jpg" type="image/jpeg">
     <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
@@ -24,7 +24,6 @@
             --accent-soft: rgba(16, 185, 129, 0.12);
             --gradient-main: linear-gradient(135deg, #10b981 0%, #059669 100%);
             --loading-bar-color: #ef4444;
-
             --glass-bg: rgba(255, 255, 255, 0.20);
             --glass-border: rgba(255, 255, 255, 0.35);
             --glass-shadow: 0px 6px 30px 0px rgba(0, 0, 0, 0.12);
@@ -41,7 +40,6 @@
             --accent: #34d399;
             --accent-soft: rgba(52, 211, 153, 0.14);
             --gradient-main: linear-gradient(135deg, #34d399 0%, #10b981 100%);
-
             --glass-bg: rgba(22, 26, 38, 0.20);
             --glass-border: rgba(255, 255, 255, 0.12);
             --glass-shadow: 0px 6px 30px 0px rgba(0, 0, 0, 0.45);
@@ -163,8 +161,7 @@
         }
 
         .glass:hover {
-            transform: scale(1.02);
-            box-shadow: var(--glass-shadow);
+            transform: scale(1.015);
         }
 
         .glass>.vibrancy-effect {
@@ -282,77 +279,90 @@
             z-index: 1;
         }
 
-        .hero {
+        /* ========== 404 主区域 ========== */
+        .error-hero {
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
-            gap: 2.2rem;
-            padding: 2rem 0 4rem;
+            gap: 1.4rem;
+            padding: 3rem 0 2rem;
         }
 
-        .avatar-wrapper {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            overflow: hidden;
-            padding: 3px;
-            background: var(--gradient-main);
-            box-shadow: 0 0 50px var(--accent-soft);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        .error-glass {
+            display: inline-block;
+            padding: 1.6rem 2.4rem;
+            margin-bottom: 0.4rem;
         }
 
-        .avatar-wrapper:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 80px var(--accent);
+        .error-glass pre {
+            font-family: "Consolas", "Monaco", "JetBrains Mono", monospace;
+            font-size: 0.8rem;
+            line-height: 1.3;
+            white-space: pre;
+            color: var(--text-primary);
+            margin: 0;
         }
 
-        .avatar-wrapper img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
-            background: var(--bg-base);
-        }
-
-        .hero-text h1 {
-            font-size: 3rem;
-            font-weight: 800;
-            margin-bottom: 0.8rem;
-            letter-spacing: -0.5px;
-        }
-
-        .hero-text .subtitle {
-            color: var(--text-secondary);
-            font-size: 1.2rem;
-            max-width: 620px;
-            margin-bottom: 2rem;
-        }
-
-        .hero-text .highlight {
+        .error-code {
+            font-size: clamp(4.5rem, 14vw, 8rem);
+            font-weight: 900;
+            line-height: 1;
+            letter-spacing: -4px;
             background: var(--gradient-main);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            margin-bottom: 0.2rem;
         }
 
-        .social-links {
+        .error-hero h1 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .error-hero .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            max-width: 560px;
+            margin: 0 auto;
+        }
+
+        .error-path {
+            display: inline-block;
+            padding: 0.35rem 0.9rem;
+            border-radius: 10px;
+            font-family: Consolas, "Monaco", monospace;
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            word-break: break-all;
+            max-width: 100%;
+        }
+
+        .error-actions {
             display: flex;
-            gap: 1rem;
+            gap: 0.9rem;
             justify-content: center;
             flex-wrap: wrap;
+            margin-top: 0.6rem;
         }
 
         .btn-primary {
             padding: 0.75rem 1.8rem;
             background: var(--gradient-main);
-            color: white;
+            color: #fff;
             text-decoration: none;
             border-radius: 12px;
             font-weight: 600;
             font-size: 0.95rem;
             transition: all 0.25s ease;
             box-shadow: 0 4px 20px rgba(16, 185, 129, 0.35);
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
         }
 
         .btn-primary:hover {
@@ -368,137 +378,63 @@
             font-weight: 500;
             font-size: 0.95rem;
             transition: all 0.25s ease;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            cursor: pointer;
+            font-family: inherit;
         }
 
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
+        .btn-ghost:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+            background: var(--accent-soft);
         }
 
-        .section-title::before {
-            content: '';
-            width: 4px;
-            height: 22px;
-            background: var(--gradient-main);
-            border-radius: 2px;
-        }
-
-        .glass-wrap {
+        .quick-links {
+            margin-top: 2.6rem;
             width: 100%;
-            margin-bottom: 4rem;
         }
 
-        .glass-wrap:last-child {
-            margin-bottom: 0;
-        }
-
-        .glass-card-inner {
-            padding: 2.2rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.2rem;
-        }
-
-        .skill-card-inner {
-            padding: 1.5rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .skill-item h3 {
-            font-size: 1.05rem;
-            margin-bottom: 0.6rem;
-            background: var(--gradient-main);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .skill-item p {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            line-height: 1.7;
-        }
-
-        .project-highlight {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-        }
-
-        .project-info {
-            flex: 1;
-        }
-
-        .project-info h3 {
-            font-size: 1.4rem;
-            margin-bottom: 0.6rem;
-        }
-
-        .project-info p {
-            color: var(--text-secondary);
-            margin-bottom: 1.2rem;
-            font-size: 0.95rem;
-        }
-
-        /* GitHub语言占比进度条 */
-        .lang-bar-wrap {
-            width: 100%;
-            height: 10px;
-            border-radius: 999px;
-            display: flex;
-            overflow: hidden;
-            margin-bottom: 0.6rem;
-        }
-
-        .lang-segment {
-            height: 100%;
-        }
-
-        .lang-legend {
-            display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-            font-size: 0.85rem;
-            color: var(--text-muted);
+        .quick-links h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
             margin-bottom: 1rem;
+            color: var(--text-secondary);
+            text-align: center;
         }
 
-        .lang-legend-item {
+        .link-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+
+        .link-card {
+            padding: 1.2rem 1.4rem;
+            text-decoration: none;
+            color: var(--text-primary);
             display: flex;
-            align-items: center;
-            gap: 6px;
+            flex-direction: column;
+            gap: 0.25rem;
         }
 
-        .lang-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
+        .link-card .link-emoji {
+            font-size: 1.3rem;
         }
 
-        .dot-python {
-            background: #3572A5;
+        .link-card .link-title {
+            font-weight: 600;
+            font-size: 0.98rem;
         }
 
-        .dot-html {
-            background: #e34c26;
+        .link-card .link-desc {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            line-height: 1.5;
         }
 
-        .dot-javascript {
-            background: #f1e05a;
-        }
-
-        .dot-css {
-            background: #563d7c;
+        .link-card:hover .link-title {
+            color: var(--accent);
         }
 
         footer {
@@ -513,13 +449,12 @@
         }
 
         @media (max-width: 768px) {
-            .hero-text h1 {
-                font-size: 2.2rem;
+            .error-glass pre {
+                font-size: 0.58rem;
             }
 
-            .project-highlight {
-                flex-direction: column;
-                text-align: center;
+            .error-hero h1 {
+                font-size: 1.5rem;
             }
 
             .nav-wrap {
@@ -541,6 +476,17 @@
                 font-size: 0.9rem;
             }
         }
+
+        @media (max-width: 480px) {
+            .time-widget {
+                display: none;
+            }
+
+            .nav-item {
+                padding: 0.45rem 0.55rem;
+                font-size: 0.78rem;
+            }
+        }
     </style>
 </head>
 
@@ -556,7 +502,7 @@
                 <div class="nav-wrap">
                     <div class="time-widget">🕒 {{beijingTime}}</div>
                     <nav class="nav-items">
-                        <a href="index.html" class="nav-item active">首页</a>
+                        <a href="index.html" class="nav-item">首页</a>
                         <a href="one-editor.html" class="nav-item">One Editor</a>
                         <a href="one-cedric.html" class="nav-item">One Cedric</a>
                     </nav>
@@ -573,139 +519,63 @@
         </div>
 
         <main class="page-fade" :class="{'in':pageMounted}">
-            <section class="hero">
-                <div class="avatar-wrapper">
-                    <img src="./assets/icon.jpg" alt="个人头像">
+            <section class="error-hero">
+                <div class="glass error-glass">
+                    <div class="vibrancy-effect"></div>
+                    <pre>  _  _    ___  _  _   
+ | || |  / _ \| || |  
+ | || |_| | | | || |_ 
+ |__   _| |_| |__   _|
+    |_|  \___/   |_|  
+</pre>
                 </div>
-                <div class="hero-text">
-                    <h1>你好，我是 Aoan2011</h1>
-                    <p class="subtitle">
-                        <span class="highlight">高中生 · 开源开发者</span> · 专注终端工具与开发者效率
-                        <br>热爱开源，追求极简而强大的设计美学
-                    </p>
-                    <div class="social-links">
-                        <a href="https://github.com/Aoan2011" target="_blank" class="btn-primary">GitHub 主页</a>
-                        <a href="one-editor.html" class="btn-ghost">查看 One Editor</a>
-                    </div>
+
+                <div class="error-code">404</div>
+                <h1>页面走失了</h1>
+                <p class="subtitle">
+                    你访问的页面不存在、已被移动，或者链接输错了。<br>
+                    别担心，回到首页重新出发就好。
+                </p>
+
+                <div class="error-path" v-if="attemptedPath">
+                    请求路径：{{attemptedPath}}
+                </div>
+
+                <div class="error-actions">
+                    <a href="index.html" class="btn-primary">返回首页</a>
+                    <button class="btn-ghost" @click="goBack">返回上一页</button>
                 </div>
             </section>
 
-            <div class="glass-wrap">
-                <h2 class="section-title">编程语言</h2>
-                <div class="skills-grid">
-                    <div class="glass">
+            <section class="quick-links">
+                <h2>或者，你可能想找——</h2>
+                <div class="link-grid">
+                    <a href="index.html" class="glass link-card">
                         <div class="vibrancy-effect"></div>
-                        <div class="skill-card-inner skill-item">
-                            <h3>C/C++</h3>
-                            <p>底层系统编程，理解内存与性能底层逻辑</p>
-                        </div>
-                    </div>
-                    <div class="glass">
+                        <span class="link-emoji">🏠</span>
+                        <span class="link-title">首页</span>
+                        <span class="link-desc">个人主页与项目总览</span>
+                    </a>
+                    <a href="one-editor.html" class="glass link-card">
                         <div class="vibrancy-effect"></div>
-                        <div class="skill-card-inner skill-item">
-                            <h3>Python</h3>
-                            <p>主力开发语言，TUI、工具、脚本快速实现</p>
-                        </div>
-                    </div>
-                    <div class="glass">
+                        <span class="link-emoji">📝</span>
+                        <span class="link-title">One Editor</span>
+                        <span class="link-desc">终端代码编辑器，支持下载</span>
+                    </a>
+                    <a href="one-cedric.html" class="glass link-card">
                         <div class="vibrancy-effect"></div>
-                        <div class="skill-card-inner skill-item">
-                            <h3>HTML</h3>
-                            <p>网页界面、个人站点与前端原型搭建</p>
-                        </div>
-                    </div>
-                    <div class="glass">
+                        <span class="link-emoji">🤖</span>
+                        <span class="link-title">One Cedric</span>
+                        <span class="link-desc">An AI agent for beginners</span>
+                    </a>
+                    <a href="https://github.com/Aoan2011" target="_blank" class="glass link-card">
                         <div class="vibrancy-effect"></div>
-                        <div class="skill-card-inner skill-item">
-                            <h3>Rust</h3>
-                            <p>高性能安全系统语言，学习内存安全范式</p>
-                        </div>
-                    </div>
-                    <div class="glass">
-                        <div class="vibrancy-effect"></div>
-                        <div class="skill-card-inner skill-item">
-                            <h3>Go</h3>
-                            <p>简洁高效并发，后端与工具链开发实践</p>
-                        </div>
-                    </div>
+                        <span class="link-emoji">🐙</span>
+                        <span class="link-title">GitHub</span>
+                        <span class="link-desc">查看全部开源项目</span>
+                    </a>
                 </div>
-            </div>
-
-            <div class="glass-wrap">
-                <h2 class="section-title">代表项目</h2>
-                <!-- One Editor -->
-                <div class="glass" style="margin-bottom:1.4rem;">
-                    <div class="vibrancy-effect"></div>
-                    <div class="glass-card-inner">
-                        <div class="project-highlight">
-                            <div class="project-info">
-                                <h3>One Editor</h3>
-                                <p>基于 Textual 构建的现代化终端代码编辑器，提供接近 VSCode 的编辑体验，同时保持轻量、快速和高度可定制。</p>
-                                <div class="lang-bar-wrap">
-                                    <div class="lang-segment dot-python" style="width:100%"></div>
-                                </div>
-                                <div class="lang-legend">
-                                    <span class="lang-legend-item"><span class="lang-dot dot-python"></span>Python
-                                        100%</span>
-                                </div>
-                                <a href="one-editor.html" class="btn-ghost">了解详情 →</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- One-Cedric -->
-                <div class="glass" style="margin-bottom:1.4rem;">
-                    <div class="vibrancy-effect"></div>
-                    <div class="glass-card-inner">
-                        <div class="project-highlight">
-                            <div class="project-info">
-                                <h3>One-Cedric</h3>
-                                <p>An AI agent for beginners — 面向初学者的 AI Agent 框架，简洁易用的 API，帮助新手快速构建自己的 AI 智能体。</p>
-                                <div class="lang-bar-wrap">
-                                    <div class="lang-segment dot-python" style="width:85.3%"></div>
-                                    <div class="lang-segment dot-javascript" style="width:6.8%"></div>
-                                    <div class="lang-segment dot-html" style="width:4.5%"></div>
-                                    <div class="lang-segment dot-css" style="width:3.4%"></div>
-                                </div>
-                                <div class="lang-legend">
-                                    <span class="lang-legend-item"><span class="lang-dot dot-python"></span>Python
-                                        85.3%</span>
-                                    <span class="lang-legend-item"><span
-                                            class="lang-dot dot-javascript"></span>JavaScript
-                                        6.8%</span>
-                                    <span class="lang-legend-item"><span class="lang-dot dot-html"></span>HTML
-                                        4.5%</span>
-                                    <span class="lang-legend-item"><span class="lang-dot dot-css"></span>CSS
-                                        3.4%</span>
-                                </div>
-                                <a href="one-cedric.html" class="btn-ghost">了解详情 →</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Aoan2011.github.io -->
-                <div class="glass">
-                    <div class="vibrancy-effect"></div>
-                    <div class="glass-card-inner">
-                        <div class="project-highlight">
-                            <div class="project-info">
-                                <h3>Aoan2011.github.io</h3>
-                                <p>个人开源主页站点，液态玻璃UI设计，深浅色双主题，山川动态背景，用于展示个人项目与介绍。</p>
-                                <div class="lang-bar-wrap">
-                                    <div class="lang-segment dot-html" style="width:100%"></div>
-                                </div>
-                                <div class="lang-legend">
-                                    <span class="lang-legend-item"><span class="lang-dot dot-html"></span>HTML
-                                        100%</span>
-                                </div>
-                                <a href="https://aoan2011.github.io" target="_blank" class="btn-ghost">访问站点 →</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            </section>
         </main>
 
         <footer>
@@ -718,7 +588,7 @@
 
         createApp({
             setup() {
-                const themeMode = ref('dark'); // dark / light / auto 默认深色
+                const themeMode = ref('dark');
                 const THEME_KEY = 'site_theme_preference';
 
                 // 本地背景 m1-m9
@@ -788,6 +658,29 @@
                 // 页面入场动画
                 const pageMounted = ref(false);
 
+                // 记录用户尝试访问的路径
+                const attemptedPath = ref('');
+                function initAttemptedPath() {
+                    try {
+                        const path = window.location.pathname + window.location.hash + window.location.search;
+                        // 避免过长或空
+                        if (path && path !== '/' && path.length < 200) {
+                            attemptedPath.value = path;
+                        }
+                    } catch (e) {
+                        // 忽略
+                    }
+                }
+
+                // 返回上一页
+                function goBack() {
+                    if (window.history.length > 1) {
+                        window.history.back();
+                    } else {
+                        window.location.href = 'index.html';
+                    }
+                }
+
                 // 主题系统
                 function applyTheme(mode) {
                     themeMode.value = mode;
@@ -808,13 +701,14 @@
                     if (saved) {
                         applyTheme(saved);
                     } else {
-                        applyTheme('dark'); // 默认深色
+                        applyTheme('dark');
                     }
                 }
 
                 let timeTimer = null;
                 onMounted(async () => {
                     initTheme();
+                    initAttemptedPath();
                     window.addEventListener('mousemove', onMouseMove);
                     window.addEventListener('scroll', handleScrollHideNav);
                     updateBeijingTime();
@@ -839,7 +733,8 @@
                     themeMode, setTheme,
                     backgroundStyle, lightStyle,
                     scrollPercent, shrinkNavbar, toggleShrinkNavbar,
-                    beijingTime, pageMounted
+                    beijingTime, pageMounted,
+                    attemptedPath, goBack
                 };
             }
         }).mount('#app');

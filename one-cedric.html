@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>One-Editor | Aoan2011</title>
+    <title>One-Cedric | Aoan2011</title>
     <link rel="icon" href="./assets/icon.jpg" type="image/jpeg">
     <link rel="shortcut icon" href="./assets/icon.jpg" type="image/jpeg">
     <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
@@ -65,7 +66,6 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* 顶部红色加载条 */
         .top-loading-bar {
             position: fixed;
             top: 0;
@@ -82,7 +82,6 @@
             transform: translateY(0);
         }
 
-        /* 页面入场动画 */
         .page-fade {
             opacity: 0;
             transform: translateY(14px);
@@ -191,7 +190,6 @@
             border-radius: inherit;
         }
 
-        /* ========== 底部导航栏：低矮长条模式 ========== */
         .nav-toolbar {
             position: fixed;
             bottom: 1.6rem;
@@ -297,7 +295,6 @@
             z-index: 1;
         }
 
-        /* ========== Hero ========== */
         .hero-page {
             text-align: center;
             margin-bottom: 2rem;
@@ -366,7 +363,6 @@
             transition: all 0.25s ease;
         }
 
-        /* ========== 数据源状态 ========== */
         .source-status {
             margin-bottom: 1.6rem;
             padding: 0.9rem 1.4rem;
@@ -419,7 +415,6 @@
             border-color: var(--accent);
         }
 
-        /* ========== 加载动画 ========== */
         .loader-wrap {
             padding: 3rem 2rem;
             display: flex;
@@ -458,7 +453,6 @@
             text-align: center;
         }
 
-        /* ========== Markdown ========== */
         .markdown-wrap {
             padding: 2.4rem;
             position: relative;
@@ -506,7 +500,6 @@
             max-width: 100%;
         }
 
-        /* ========== 下载区域 ========== */
         .download-section {
             margin-top: 3.2rem;
         }
@@ -779,8 +772,8 @@
                     <div class="time-widget">🕒 {{beijingTime}}</div>
                     <nav class="nav-items">
                         <a href="index.html" class="nav-item">首页</a>
-                        <a href="one-editor.html" class="nav-item active">One Editor</a>
-                        <a href="one-cedric.html" class="nav-item">One Cedric</a>
+                        <a href="one-editor.html" class="nav-item">One Editor</a>
+                        <a href="one-cedric.html" class="nav-item active">One Cedric</a>
                     </nav>
                     <div class="theme-group">
                         <button class="theme-btn" :class="{'active':themeMode==='dark'}" @click="setTheme('dark')"
@@ -797,19 +790,11 @@
         <main class="page-fade" :class="{'in':pageMounted}">
             <!-- ==================== 项目介绍 ==================== -->
             <section class="hero-page">
-                <div class="glass ascii-art-block">
-                    <div class="vibrancy-effect"></div>
-                    <pre>   ___                  _____    _ _ _            
- / _ \ _ __   ___     | ____|__| (_) |_ ___  _ __ 
-| | | | '_ \ / _ \    |  _| / _` | | __/ _ \| '__|
-| |_| | | | |  __/    | |__| (_| | | || (_) | |   
- \___/|_| |_|\___|    |_____\__,_|_|\__\___/|_|   
-</pre>
-                </div>
-                <h1>One-Editor</h1>
-                <p>基于 Textual 构建的现代化终端代码编辑器，轻量、高速、高度可定制的终端IDE。</p>
+                
+                <h1>One-Cedric</h1>
+                <p>基于 Rich 构建的适用于初学者的Agent项目。</p>
                 <div class="btn-group">
-                    <a href="https://github.com/Aoan2011/ONE-Editor" target="_blank" class="btn-primary">GitHub仓库</a>
+                    <a href="https://github.com/Aoan2011/ONE-Cedric" target="_blank" class="btn-primary">GitHub仓库</a>
                     <a href="#download" class="btn-ghost">下载使用</a>
                 </div>
             </section>
@@ -839,9 +824,9 @@
                 <div v-else class="markdown-wrap markdown-body" v-html="renderedMarkdown"></div>
             </div>
 
-            <!-- ==================== 下载区域（原 download.html 内容） ==================== -->
+            <!-- ==================== 下载区域 ==================== -->
             <section class="download-section" id="download">
-                <h2 class="section-title">下载 One-Editor</h2>
+                <h2 class="section-title">下载 One-Cedric</h2>
                 <p class="platform-desc">获取正式版 / 预发布版，也可以从源码自行构建。</p>
 
                 <div class="glass" v-if="fetchLoading">
@@ -899,7 +884,7 @@
                     <div class="glass" style="padding:1.6rem;margin-bottom:1.4rem;" v-if="!releaseData.found">
                         <h3>⚠️ 获取版本信息失败</h3>
                         <p class="platform-desc">GitHub API限流、网络异常，本地 assets/release.json 也加载失败。</p>
-                        <a class="btn-block btn-primary" href="https://github.com/Aoan2011/ONE-Editor/releases"
+                        <a class="btn-block btn-primary" href="https://github.com/Aoan2011/ONE-Cedric/releases"
                             target="_blank">打开 GitHub Releases</a>
                     </div>
 
@@ -939,8 +924,8 @@
                         <h3 class="section-title" style="margin-bottom:1rem;">🧑‍💻 从源码运行 / 编译</h3>
                         <p>需要 Python 3.11+ 环境，推荐使用虚拟环境：</p>
                         <div class="code-block">
-                            git clone https://github.com/Aoan2011/ONE-Editor.git
-                            cd ONE-Editor
+                            git clone https://github.com/Aoan2011/ONE-Cedric.git
+                            cd ONE-Cedric
                             python -m venv venv
 
                             # Windows
@@ -955,7 +940,7 @@
                         <h3 style="margin-top:1.4rem;">打包为独立可执行文件</h3>
                         <div class="code-block">
                             pip install pyinstaller
-                            pyinstaller one_editor.spec
+                            pyinstaller one_cedric.spec
                         </div>
                         <p style="margin-top:0.8rem;">打包产物输出到 <code>dist/</code> 目录。</p>
                     </div>
@@ -984,13 +969,12 @@
 
         createApp({
             setup() {
-                /* ==================== 通用：主题 / 加载条 / 导航 ==================== */
-                const themeMode = ref('dark'); // dark / light / auto
+                /* ==================== 通用 ==================== */
+                const themeMode = ref('dark');
                 const THEME_KEY = 'site_theme_preference';
-                const CACHE_KEY = 'one_editor_readme_cache';
-                const MODE_STORAGE_KEY = 'one_editor_source_mode';
+                const CACHE_KEY = 'one_cedric_readme_cache';
+                const MODE_STORAGE_KEY = 'one_cedric_source_mode';
 
-                // ---------- 顶部加载条 ----------
                 const isPageLoading = ref(false);
                 const loadingBarWidth = ref(0);
                 let loadingTaskCount = 0;
@@ -1016,7 +1000,6 @@
                     }, 220);
                 }
 
-                // ---------- 主题 ----------
                 function applyTheme(mode) {
                     themeMode.value = mode;
                     let effective = mode;
@@ -1036,7 +1019,6 @@
                     applyTheme(saved ? saved : 'dark');
                 }
 
-                // ---------- 底部导航 ----------
                 const shrinkNavbar = ref(false);
                 const pageMounted = ref(false);
 
@@ -1044,7 +1026,6 @@
                     shrinkNavbar.value = !shrinkNavbar.value;
                 }
 
-                // ---------- 背景 ----------
                 const mountainImages = [
                     './assets/mountain/m1.jpg',
                     './assets/mountain/m2.jpg',
@@ -1059,7 +1040,6 @@
                 const randomMountain = mountainImages[Math.floor(Math.random() * mountainImages.length)];
                 const backgroundStyle = computed(() => ({ backgroundImage: `url('${randomMountain}')` }));
 
-                // ---------- 鼠标点光源 ----------
                 const mouseX = ref(0);
                 const mouseY = ref(0);
                 const lightStyle = computed(() => ({
@@ -1072,7 +1052,6 @@
                     mouseY.value = e.clientY;
                 }
 
-                // ---------- 阅读进度 ----------
                 const scrollPercent = ref(0);
 
                 function updateScrollProgress() {
@@ -1081,7 +1060,6 @@
                     scrollPercent.value = dh > 0 ? (st / dh) * 100 : 0;
                 }
 
-                // ---------- 滚动收起导航 ----------
                 let lastScrollY = 0;
                 const SCROLL_THRESHOLD = 80;
 
@@ -1098,17 +1076,16 @@
                     lastScrollY = curr;
                 }
 
-                // ---------- 北京时间 ----------
                 const beijingTime = ref('');
 
                 function updateBeijingTime() {
                     beijingTime.value = new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' });
                 }
 
-                /* ==================== 第一部分：README 加载 ==================== */
+                /* ==================== README 加载 ==================== */
                 const renderedMarkdown = ref('');
-                const userMode = ref('auto'); // auto / github / cache / jsdelivr
-                const sourceLevel = ref(0);   // 1=github 2=cache 3=jsdelivr
+                const userMode = ref('auto');
+                const sourceLevel = ref(0);
                 const isLoading = ref(false);
                 const loadingStep = ref('');
 
@@ -1126,8 +1103,8 @@
                     return 'dot-cdn';
                 });
 
-                const RAW_GITHUB_README = "https://raw.githubusercontent.com/Aoan2011/ONE-Editor/main/README.md";
-                const JSDelivr_MD = "https://cdn.jsdelivr.net/gh/Aoan2011/ONE-Editor@main/README.md";
+                const RAW_GITHUB_README = "https://raw.githubusercontent.com/Aoan2011/ONE-Cedric/main/README.md";
+                const JSDelivr_MD = "https://cdn.jsdelivr.net/gh/Aoan2011/ONE-Cedric@main/README.md";
 
                 async function loadReadme() {
                     isLoading.value = true;
@@ -1138,7 +1115,6 @@
                     let mdText = '';
                     const mode = userMode.value;
 
-                    // ---- 指定 GitHub ----
                     if (mode === 'github') {
                         loadingStep.value = '正在请求 GitHub 远程 README...';
                         await triggerLoadingBar();
@@ -1160,7 +1136,6 @@
                         return;
                     }
 
-                    // ---- 指定缓存 ----
                     if (mode === 'cache') {
                         loadingStep.value = '读取浏览器缓存...';
                         await triggerLoadingBar();
@@ -1177,7 +1152,6 @@
                         return;
                     }
 
-                    // ---- 指定 jsDelivr ----
                     if (mode === 'jsdelivr') {
                         loadingStep.value = '正在请求 jsDelivr CDN 文档...';
                         await triggerLoadingBar();
@@ -1198,7 +1172,7 @@
                         return;
                     }
 
-                    // ---- Auto 自动降级 ----
+                    // Auto
                     loadingStep.value = '[1/3] 尝试 GitHub 远程源...';
                     await triggerLoadingBar();
                     try {
@@ -1254,9 +1228,9 @@
                     loadReadme();
                 }
 
-                /* ==================== 第二部分：Releases 加载 ==================== */
-                const GITHUB_REPO = 'Aoan2011/ONE-Editor';
-                const CACHE_TTL = 1000 * 60 * 30; // 30 分钟
+                /* ==================== Releases 加载 ==================== */
+                const GITHUB_REPO = 'Aoan2011/ONE-Cedric';
+                const CACHE_TTL = 1000 * 60 * 30;
 
                 const sourceMode = ref('auto');
                 const changelogSourceMode = ref('auto');
@@ -1334,7 +1308,6 @@
                         console.warn('GitHub api fail，release 尝试本地回退', err);
                         fetchStep.value = '[2/3] 切换读取本地 assets/release.json';
 
-                        // changelog 不再走本地，直接清空
                         changelogList.value = [];
                         changelogSourceMode.value = '';
 
@@ -1361,7 +1334,6 @@
                 let timeTimer = null;
 
                 onMounted(async () => {
-                    // 读取上次用户选择的 README 源
                     const savedMode = localStorage.getItem(MODE_STORAGE_KEY);
                     if (['auto', 'github', 'cache', 'jsdelivr'].includes(savedMode)) {
                         userMode.value = savedMode;
@@ -1383,7 +1355,6 @@
                         pageMounted.value = true;
                     });
 
-                    // 并行加载 README 与 Release 数据
                     await Promise.all([loadReadme(), fetchGitHubReleases()]);
                 });
 
@@ -1394,17 +1365,14 @@
                 });
 
                 return {
-                    // 通用
                     themeMode, setTheme,
                     shrinkNavbar, toggleShrinkNavbar,
                     backgroundStyle, lightStyle,
                     scrollPercent, beijingTime,
                     isPageLoading, loadingBarWidth, pageMounted,
-                    // README
                     userMode, onModeChange,
                     renderedMarkdown, sourceText, statusDotClass,
                     isLoading, loadingStep,
-                    // Releases
                     fetchLoading, fetchStep, sourceMode, changelogSourceMode, cacheExpireText,
                     releaseData, changelogList, historyReleases
                 };

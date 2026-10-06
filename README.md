@@ -8,11 +8,15 @@
 ## **这是我的个人网站**
 
 # Star History
-<a href="https://www.star-history.com/?repos=Aoan2011%2FAoan2011.github.io&type=date&legend=top-left">
+## Star History
+
+## Star History
+
+<a href="https://www.star-history.com/?repos=aoan2011%2Faoan2011.github.com&type=date&legend=top-left">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=Aoan2011/Aoan2011.github.io&type=date&theme=dark&legend=top-left&sealed_token=jVtPLKvvl2p6EUqncJYxDXqumE1obFQ4RmTHCSeIKD-h6mmkjIE3ET9spEUchZaxmcrAw7KzXS2wd0JlfyKFKmjFTX9rvqrWMV8vB_J9wgiCH3s31KVOxw" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=Aoan2011/Aoan2011.github.io&type=date&legend=top-left&sealed_token=jVtPLKvvl2p6EUqncJYxDXqumE1obFQ4RmTHCSeIKD-h6mmkjIE3ET9spEUchZaxmcrAw7KzXS2wd0JlfyKFKmjFTX9rvqrWMV8vB_J9wgiCH3s31KVOxw" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=Aoan2011/Aoan2011.github.io&type=date&legend=top-left&sealed_token=jVtPLKvvl2p6EUqncJYxDXqumE1obFQ4RmTHCSeIKD-h6mmkjIE3ET9spEUchZaxmcrAw7KzXS2wd0JlfyKFKmjFTX9rvqrWMV8vB_J9wgiCH3s31KVOxw" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=aoan2011/aoan2011.github.com&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=aoan2011/aoan2011.github.com&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=aoan2011/aoan2011.github.com&type=date&legend=top-left" />
  </picture>
 </a>
 
