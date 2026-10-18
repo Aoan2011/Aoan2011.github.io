@@ -1,0 +1,79 @@
+{
+  "pages": [
+    {
+      "file": "Home.md",
+      "slug": "Home",
+      "title": "从 0 写一个 Agent · One Cedric 开发手册"
+    },
+    {
+      "file": "00-preface.md",
+      "slug": "00-preface",
+      "title": "00 · 前言与阅读指南"
+    },
+    {
+      "file": "01-concepts.md",
+      "slug": "01-concepts",
+      "title": "01 · 概念篇：Agent 到底是什么"
+    },
+    {
+      "file": "02-minimal-agent.md",
+      "slug": "02-minimal-agent",
+      "title": "02 · 第一个 Agent：500 行起步"
+    },
+    {
+      "file": "03-project-refactor.md",
+      "slug": "03-project-refactor",
+      "title": "03 · 拆包与工程化：从脚本到项目"
+    },
+    {
+      "file": "04-rich-ui.md",
+      "slug": "04-rich-ui",
+      "title": "04 · 终端 UI 进化：用 Rich 把黑框变产品"
+    },
+    {
+      "file": "05-tool-system.md",
+      "slug": "05-tool-system",
+      "title": "05 · 工具系统：从 4 个函数到 250 个工具"
+    },
+    {
+      "file": "06-streaming-reasoning.md",
+      "slug": "06-streaming-reasoning",
+      "title": "06 · 流式与推理：让打字机和\"脑内小剧场\"都看得见"
+    },
+    {
+      "file": "07-permissions-safety.md",
+      "slug": "07-permissions-safety",
+      "title": "07 · 权限与安全：永远不要相信模型"
+    },
+    {
+      "file": "08-agent-loop-engineering.md",
+      "slug": "08-agent-loop-engineering",
+      "title": "08 · Agent 循环工程：让 250 个工具跑得又快又稳"
+    },
+    {
+      "file": "09-mega-batch.md",
+      "slug": "09-mega-batch",
+      "title": "09 · 十条需求与批量交付：一个人怎么在一周内长出 200 个工具"
+    },
+    {
+      "file": "10-gateway-webui.md",
+      "slug": "10-gateway-webui",
+      "title": "10 · 网关与 WebUI：给终端 Agent 开一扇浏览器窗户"
+    },
+    {
+      "file": "11-memory-automation-ecosystem.md",
+      "slug": "11-memory-automation-ecosystem",
+      "title": "11 · 记忆、自动化与生态：让 Agent 长出\"长期生活\""
+    },
+    {
+      "file": "12-testing-release.md",
+      "slug": "12-testing-release",
+      "title": "12 · 测试、审计与发布：把\"能用\"变成\"敢发布\""
+    },
+    {
+      "file": "99-appendix.md",
+      "slug": "99-appendix",
+      "title": "附录 · 速查与考据"
+    }
+  ]
+}
