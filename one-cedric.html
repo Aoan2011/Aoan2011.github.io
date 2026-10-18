@@ -704,6 +704,98 @@
             z-index: 1;
         }
 
+        /* ==================== 新增：Wiki 样式 ==================== */
+        .wiki-section {
+            margin-top: 3.2rem;
+        }
+
+        .wiki-layout {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .wiki-layout.glass:hover {
+            transform: none;
+        }
+
+        .wiki-sidebar {
+            border-right: 1px solid var(--glass-border);
+            padding: 1.4rem 1rem;
+            max-height: 640px;
+            overflow-y: auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .wiki-sidebar-title {
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .wiki-nav-item {
+            display: block;
+            padding: 0.5rem 0.7rem;
+            border-radius: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            margin-bottom: 2px;
+            line-height: 1.4;
+            word-break: break-word;
+            cursor: pointer;
+        }
+
+        .wiki-nav-item:hover {
+            background: var(--accent-soft);
+            color: var(--accent);
+        }
+
+        .wiki-nav-item.active {
+            background: var(--accent-soft);
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .wiki-content {
+            padding: 1.6rem 1.8rem;
+            max-height: 640px;
+            overflow-y: auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .wiki-content h1:first-child,
+        .wiki-content .markdown-body h1:first-child {
+            margin-top: 0;
+        }
+
+        .wiki-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+
+        .wiki-content th,
+        .wiki-content td {
+            border: 1px solid var(--glass-border);
+            padding: 0.5rem 0.7rem;
+            text-align: left;
+        }
+
+        .wiki-content blockquote {
+            border-left: 3px solid var(--accent);
+            padding-left: 0.9rem;
+            color: var(--text-muted);
+            margin: 0.8rem 0;
+        }
+        /* ==================== Wiki 样式结束 ==================== */
+
         @media (max-width: 768px) {
             .ascii-art-block pre {
                 font-size: 0.54rem;
@@ -743,6 +835,37 @@
             .section-title {
                 font-size: 1.25rem;
             }
+
+            /* 新增：Wiki 移动端 */
+            .wiki-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .wiki-sidebar {
+                border-right: none;
+                border-bottom: 1px solid var(--glass-border);
+                max-height: none;
+                padding: 0.9rem;
+                display: flex;
+                flex-direction: row;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                gap: 4px;
+            }
+
+            .wiki-sidebar-title {
+                display: none;
+            }
+
+            .wiki-nav-item {
+                white-space: nowrap;
+                margin-bottom: 0;
+            }
+
+            .wiki-content {
+                padding: 1.2rem;
+                max-height: 520px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -753,6 +876,11 @@
             .nav-item {
                 padding: 0.45rem 0.55rem;
                 font-size: 0.78rem;
+            }
+
+            /* 新增：窄屏隐藏 Wiki 顶部导航，避免底部工具栏溢出 */
+            .wiki-nav-extra {
+                display: none;
             }
         }
     </style>
@@ -774,6 +902,8 @@
                         <a href="index.html" class="nav-item">首页</a>
                         <a href="one-editor.html" class="nav-item">One Editor</a>
                         <a href="one-cedric.html" class="nav-item active">One Cedric</a>
+                        <!-- 新增：Wiki 导航入口 -->
+                        <a href="#wiki" class="nav-item wiki-nav-extra">Wiki</a>
                     </nav>
                     <div class="theme-group">
                         <button class="theme-btn" :class="{'active':themeMode==='dark'}" @click="setTheme('dark')"
@@ -957,6 +1087,45 @@
                     </div>
                 </div>
             </section>
+
+            <!-- ==================== 新增：Wiki 区块 ==================== -->
+            <section class="wiki-section" id="wiki">
+                <h2 class="section-title">📖 Wiki 开发教程</h2>
+                <p class="platform-desc">
+                    从 0 写一个 Agent · One Cedric 开发手册，内容自动从 GitHub Wiki 同步。
+                    也可直接访问
+                    <a href="https://github.com/Aoan2011/One-Cedric/wiki/" target="_blank"
+                        style="color:var(--accent)">GitHub Wiki</a>
+                    阅读。
+                </p>
+
+                <div class="glass wiki-layout">
+                    <div class="vibrancy-effect"></div>
+                    <aside class="wiki-sidebar">
+                        <div class="wiki-sidebar-title">📚 目录</div>
+                        <template v-if="wikiIndex.length">
+                            <a v-for="p in wikiIndex" :key="p.slug" href="javascript:;" class="wiki-nav-item"
+                                :class="{active: activeWikiSlug===p.slug}"
+                                @click.prevent="loadWikiPage(p.slug)">{{ p.title }}</a>
+                        </template>
+                        <div v-else class="platform-desc" style="font-size:0.85rem;padding:0.4rem;">暂无目录</div>
+                    </aside>
+                    <div class="wiki-content markdown-body">
+                        <div v-if="wikiLoading" class="loader-wrap" style="padding:2rem 1rem;">
+                            <div class="gradient-spinner"></div>
+                            <div class="loading-step-text">正在加载 Wiki 页面…</div>
+                        </div>
+                        <div v-else-if="!wikiIndex.length" class="platform-desc">
+                            尚未检测到同步的 Wiki 内容。请确认 GitHub Actions 已运行，或直接前往
+                            <a href="https://github.com/Aoan2011/One-Cedric/wiki/" target="_blank"
+                                style="color:var(--accent)">GitHub Wiki</a>
+                            阅读。
+                        </div>
+                        <div v-else v-html="wikiRendered" @click="onWikiContentClick"></div>
+                    </div>
+                </div>
+            </section>
+            <!-- ==================== Wiki 区块结束 ==================== -->
         </main>
 
         <footer>
@@ -1330,8 +1499,114 @@
                     }
                 }
 
+                /* ==================== 新增：Wiki 加载逻辑 ==================== */
+                const wikiIndex = ref([]);
+                const activeWikiSlug = ref('');
+                const wikiRendered = ref('');
+                const wikiLoading = ref(false);
+                const wikiLoaded = ref(false);
+
+                // 兼容 marked 各版本 renderer 参数签名
+                function normalizeRendererArgs(a, b, c) {
+                    if (a && typeof a === 'object') {
+                        return { href: a.href || '', title: a.title || '', text: a.text || '' };
+                    }
+                    return { href: a || '', title: b || '', text: c || '' };
+                }
+
+                function buildWikiRenderer() {
+                    const renderer = new marked.Renderer();
+
+                    renderer.link = function (a, b, c) {
+                        const { href, title, text } = normalizeRendererArgs(a, b, c);
+                        if (!href) return `<span>${text}</span>`;
+                        if (/^(https?:)?\/\//i.test(href) || /^mailto:/i.test(href)) {
+                            return `<a href="${href}"${title ? ` title="${title}"` : ''} target="_blank" rel="noopener noreferrer">${text}</a>`;
+                        }
+                        if (href.startsWith('#')) {
+                            return `<a href="${href}">${text}</a>`;
+                        }
+                        // 图片链接（Wiki 中常见 [](path.png) 写法）
+                        if (/\.(png|jpe?g|gif|svg|webp|bmp)$/i.test(href)) {
+                            return `<img src="./wiki/${href.replace(/^\.\//, '')}" alt="${text}"${title ? ` title="${title}"` : ''} style="max-width:100%" />`;
+                        }
+                        // Wiki 内部页面：Page-Name / ./Page-Name / Page-Name.md
+                        let slug = href.replace(/^\.\//, '').replace(/\.md$/i, '');
+                        slug = slug.split('#')[0].replace(/^.*\//, '');
+                        return `<a href="javascript:;" data-wiki-slug="${slug}">${text}</a>`;
+                    };
+
+                    renderer.image = function (a, b, c) {
+                        const { href, title, text } = normalizeRendererArgs(a, b, c);
+                        if (!href) return '';
+                        const src = /^(https?:)?\/\//i.test(href)
+                            ? href
+                            : `./wiki/${href.replace(/^\.\//, '')}`;
+                        return `<img src="${src}" alt="${text}"${title ? ` title="${title}"` : ''} style="max-width:100%" />`;
+                    };
+
+                    return renderer;
+                }
+
+                function renderWikiMarkdown(md) {
+                    try {
+                        return marked.parse(md, { renderer: buildWikiRenderer() });
+                    } catch (e) {
+                        return `<p style="color:#ef4444">Markdown 渲染失败：${e.message}</p>`;
+                    }
+                }
+
+                async function loadWikiIndex() {
+                    try {
+                        const resp = await fetch('./wiki/index.json', { cache: 'no-cache' });
+                        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                        const data = await resp.json();
+                        const pages = Array.isArray(data.pages) ? data.pages : [];
+                        wikiIndex.value = pages;
+                        if (pages.length) {
+                            const home = pages.find(p => p.slug === 'Home') || pages[0];
+                            await loadWikiPage(home.slug);
+                        }
+                    } catch (err) {
+                        console.warn('Wiki index 加载失败（可能尚未同步）', err);
+                        wikiIndex.value = [];
+                    }
+                }
+
+                async function loadWikiPage(slug) {
+                    if (!slug || wikiLoading.value) return;
+                    wikiLoading.value = true;
+                    wikiRendered.value = '';
+                    activeWikiSlug.value = slug;
+                    try {
+                        const resp = await fetch(`./wiki/${encodeURIComponent(slug)}.md`, { cache: 'no-cache' });
+                        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                        const md = await resp.text();
+                        wikiRendered.value = renderWikiMarkdown(md);
+                    } catch (err) {
+                        wikiRendered.value =
+                            `<p style="color:#ef4444">❌ 无法加载 Wiki 页面 ${slug}.md：${err.message}</p>`;
+                    } finally {
+                        wikiLoading.value = false;
+                    }
+                }
+
+                function onWikiContentClick(e) {
+                    const a = e.target && e.target.closest && e.target.closest('a[data-wiki-slug]');
+                    if (!a) return;
+                    e.preventDefault();
+                    const slug = a.getAttribute('data-wiki-slug');
+                    if (slug && slug !== activeWikiSlug.value) {
+                        loadWikiPage(slug);
+                        const sec = document.getElementById('wiki');
+                        if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }
+                /* ==================== Wiki 加载逻辑结束 ==================== */
+
                 /* ==================== 生命周期 ==================== */
                 let timeTimer = null;
+                let wikiObserver = null;
 
                 onMounted(async () => {
                     const savedMode = localStorage.getItem(MODE_STORAGE_KEY);
@@ -1355,6 +1630,22 @@
                         pageMounted.value = true;
                     });
 
+                    // 新增：Wiki 区域进入视口后再加载，避免首屏额外请求
+                    const wikiEl = document.getElementById('wiki');
+                    if (wikiEl && 'IntersectionObserver' in window) {
+                        wikiObserver = new IntersectionObserver((entries) => {
+                            if (entries.some(en => en.isIntersecting) && !wikiLoaded.value) {
+                                wikiLoaded.value = true;
+                                loadWikiIndex();
+                                wikiObserver.disconnect();
+                            }
+                        }, { rootMargin: '200px 0px' });
+                        wikiObserver.observe(wikiEl);
+                    } else if (wikiEl) {
+                        wikiLoaded.value = true;
+                        loadWikiIndex();
+                    }
+
                     await Promise.all([loadReadme(), fetchGitHubReleases()]);
                 });
 
@@ -1362,6 +1653,7 @@
                     window.removeEventListener('mousemove', onMouseMove);
                     window.removeEventListener('scroll', handleScrollHideNav);
                     clearInterval(timeTimer);
+                    if (wikiObserver) wikiObserver.disconnect();
                 });
 
                 return {
@@ -1374,7 +1666,10 @@
                     renderedMarkdown, sourceText, statusDotClass,
                     isLoading, loadingStep,
                     fetchLoading, fetchStep, sourceMode, changelogSourceMode, cacheExpireText,
-                    releaseData, changelogList, historyReleases
+                    releaseData, changelogList, historyReleases,
+                    // 新增：Wiki
+                    wikiIndex, activeWikiSlug, wikiRendered, wikiLoading,
+                    loadWikiPage, onWikiContentClick
                 };
             }
         }).mount('#app');

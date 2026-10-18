@@ -1,0 +1,74 @@
+name: Sync Wiki to Pages
+
+on:
+  schedule:
+    - cron: '0 * * * *'          # 每小时整点
+  repository_dispatch:
+    types: [wiki-updated]        # 供 ONE-Cedric 仓库转发触发
+  workflow_dispatch: {}          # 手动触发
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-wiki
+  cancel-in-progress: true
+
+env:
+  # 你的 Wiki 源仓库（不是 pages 仓库本身）
+  WIKI_SOURCE_REPO: Aoan2011/ONE-Cedric
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Pages Repo
+        uses: actions/checkout@v4
+
+      - name: Clone Wiki Repository
+        run: |
+          set -e
+          rm -rf wiki-src
+          if git clone --depth=1 "https://github.com/${WIKI_SOURCE_REPO}.wiki.git" wiki-src 2>/dev/null; then
+            echo "Wiki repo cloned."
+            mkdir -p wiki
+            find wiki -mindepth 1 -delete
+            cp -a wiki-src/. wiki/
+            rm -rf wiki/.git
+          else
+            echo "Wiki repo not found (or no permission). Exit gracefully."
+            exit 0
+          fi
+
+      - name: Generate wiki/index.json
+        run: |
+          python3 - <<'PY'
+          import os, json, re
+          d = 'wiki'
+          if not os.path.isdir(d):
+              raise SystemExit(0)
+          skip = {'_Sidebar.md', '_Footer.md', 'index.json'}
+          pages = []
+          for f in sorted(os.listdir(d)):
+              if not f.endswith('.md') or f in skip:
+                  continue
+              slug = f[:-3]
+              try:
+                  with open(os.path.join(d, f), encoding='utf-8') as fh:
+                      content = fh.read()
+              except Exception:
+                  content = ''
+              m = re.search(r'^#\s+(.+)$', content, re.M)
+              title = m.group(1).strip() if m else slug
+              pages.append({'file': f, 'slug': slug, 'title': title})
+          pages.sort(key=lambda p: (0 if p['slug'] == 'Home' else 1, p['title']))
+          with open(os.path.join(d, 'index.json'), 'w', encoding='utf-8') as fh:
+              json.dump({'pages': pages}, fh, ensure_ascii=False, indent=2)
+          print(f"Generated index with {len(pages)} pages")
+          PY
+
+      - name: Commit and Push
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "docs: auto-sync wiki content [skip ci]"
+          file_pattern: "wiki/**"
